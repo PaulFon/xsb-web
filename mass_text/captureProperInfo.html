@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mass Info Form for Mass Propers</title>
+
+  <!--
+  Name: Paul Fontaine
+    Date created 07/04/2020
+    Date modified 07/06/2020
+  Program Description: This program allows user to paste in text from mass propers to build html files. Some code was copied from site as an example of a "responsive form"
+  -->
+
+<h1>Enter text from Propers of the mass</h1>
+
+<meta name="viewport" content="width=device-width, initial-scale=1"> <!-- This line designates a responsive page -->
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+input[type=reset] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=reset]:hover {
+  background-color: #45a049;
+}
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <form action="writeProperFiles.php" method="post" id="" class="">
+
+    <div class="row">
+      <div class="col-25">
+        <label for="fileNamePrefix">File Name prefix</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fileNamePrefix" name="fileNamePrefix" placeholder="File Name prefix e.g. TenthSundayinOrdernaryTime">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="entranceA">Entrance Antiphon</label>
+      </div>
+      <div class="col-75">
+        <textarea id="entranceA" name="entranceA" placeholder="Entrance Antiphon/.." ></textarea>
+      </div>
+    </div>
+
+   <div class="row">
+      <div class="col-25">
+        <label for="collect">Collect</label>
+      </div>
+      <div class="col-75">
+        <textarea id="collect" name="collect" placeholder="Collect.." ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="gospelAccl">Gospel Acclamation</label>
+      </div>
+      <div class="col-75">
+        <textarea id="gospelAccl" name="gospelAccl" placeholder="Gospel Acclamation.." ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="PrayerOverOfferings">PrayerOverOfferings</label>
+      </div>
+      <div class="col-75">
+        <textarea id="PrayerOverOfferings" name="Prayer Over Offerings" placeholder="Prayer Over Offerings.." style="height:100px"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="CommunionAnt">Communion Antiphon</label>
+      </div>
+      <div class="col-75">
+        <textarea id="CommunionAnt" name="CommunionAnt" placeholder="Communion Antiphon .." style="height:100px"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="PrayerafterCommunion">Prayer after Communion </label>
+      </div>
+      <div class="col-75">
+        <textarea id="PrayerafterCommunion" name="PrayerafterCommunion" placeholder="Prayer after Communion.." ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <input type="submit" name="submit" value="submit" />
+      <input type="reset" name="reset" value="reset" />
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

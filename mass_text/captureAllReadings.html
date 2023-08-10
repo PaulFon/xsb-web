@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Enter Lectionary and Orations</title>
+
+<meta name="Author" content="Paul Fontaine">
+<meta name="DateCreated" content="07/24/2020">
+<meta name="LastModified" content="03/14/2022">
+<meta name="Description" content="This program allows user to paste text from mass propers and/or the Lectionary from USCCB to build html files..">
+<meta name="Classification" content="Religion, Christianity, Catholicism, Theology, Liturgy">
+<meta name="KeyWords" content="Order of Mass, Roman Missal">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">    
+<link rel="stylesheet" media="all" href="style/Input_Form.css"> 
+</head>
+<body>
+<h1>Enter Lectionary and Orations</h1>
+<p>Get the Lectionary readings from <a href="https://bible.usccb.org/readings/calendar" target="_blank" rel="noopener noreferrer">USCCB</a></p>
+<p>Get the Proper texts from Xavier Society</p>
+<p>The local version of HTML files for readings used in CE app are <a href="https://www.dropbox.com/home/Canonical%20Eye%20Project/htdocs/lectionary" target="_blank" rel="noopener noreferrer">in Dropbox</a> </p>
+<p> The Xavier Society Large Print version of Propers are stored on <a href="https://drive.google.com/drive/folders/1CYjd2tKtLZHnlQhcq8hKhRaNEsVBlUf_?usp=sharing" target="_blank" rel="noopener noreferrer">Canonical Eye Google Drive</a><br>
+  The propers originally are downoladed from <a href="https://xsfb.klas.com/title/summary.jsf?id=19702382.5432" target="_blank" rel="noopener noreferrer">Xavier Society</a><br>
+</p>
+<p>Enter CR at the end of approprate lines to add sense lines.&nbsp;</p>
+<div class="container">
+
+  <form action="writeReadingsFiles.php" method="post" id="" class="">
+
+    <div class="row">
+      <div class="col-25">
+        <label for="lectionaryCycle">Lectionary Cycle</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fileNamePrefix" name="lectionaryCycle" placeholder="e.g. 2ndWeekOfLentSundayCycleB - This text will be used for the file name.">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="entranceA">Entrance Antiphon</label>
+      </div>
+      <div class="col-75">
+        <textarea id="entranceA" name="entranceA" placeholder="Entrance Antiphon/..."></textarea>
+      </div>
+    </div>
+
+   <div class="row">
+      <div class="col-25">
+        <label for="collect">Collect</label>
+      </div>
+      <div class="col-75">
+        <textarea id="collect" name="collect" placeholder="Collect.." wrap="hard" ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+       <div class="col-25">
+         <label for="firstReading">First Reading</label>
+       </div>
+       <div class="col-75">
+         <textarea id="firstReading" name="firstReading" placeholder="First Reading.." ></textarea>
+       </div>
+     </div>
+
+     <div class="row">
+        <div class="col-25">
+          <label for="responsorialPsalm">Responsorial Psalm</label>
+        </div>
+        <div class="col-75">
+          <textarea id="responsorialPsalm" name="responsorialPsalm" placeholder="Responsorial Psalm .." ></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+         <div class="col-25">
+           <label for="secondReading">Second Reading</label>
+         </div>
+         <div class="col-75">
+           <textarea id="secondReading" name="secondReading" placeholder=" Second Reading .." ></textarea>
+         </div>
+       </div>
+
+<div class="row">
+      <div class="col-25">
+        <label for="sequence">Sequence</label>
+      </div>
+      <div class="col-75">
+        <textarea id="sequence" name="sequence" placeholder="Sequence.." ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="gospelAccl">Verse before the Gospel</label>
+      </div>
+      <div class="col-75">
+        <textarea id="gospelAccl" name="gospelAccl" placeholder="Verse before the Gospel.." ></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+       <div class="col-25">
+         <label for="gospel">Gospel</label>
+       </div>
+       <div class="col-75">
+         <textarea id="gospel" name="gospel" placeholder="Gospel .." ></textarea>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-25">
+         <label for="PrayerOverOfferings">Prayer Over Offerings</label>
+       </div>
+       <div class="col-75">
+         <textarea id="PrayerOverOfferings" name="PrayerOverOfferings" placeholder="Prayer Over Offerings .." ></textarea>
+       </div>
+     </div>
+
+
+    <div class="row">
+      <div class="col-25">
+        <label for="CommunionAnt">Communion Antiphon</label>
+      </div>
+      <div class="col-75">
+        <textarea id="CommunionAnt" name="CommunionAnt" placeholder="Communion Antiphon .." style="height:100px"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="PrayerafterCommunion">Prayer after Communion </label>
+      </div>
+      <div class="col-75">
+        <textarea id="PrayerafterCommunion" name="PrayerafterCommunion" placeholder="Prayer after Communion.." ></textarea>
+      </div>
+    </div>
+
+   <div class="row">
+      <div class="col-25">
+        <label for="PrayerOverThePeople">Prayer over the People</label>
+      </div>
+      <div class="col-75">
+        <textarea id="PrayerOverThePeople" name="PrayerOverThePeople" placeholder="Prayer over the People.." ></textarea>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <input type="submit" name="submit" value="submit" />
+      <input type="reset" name="reset" value="reset" />
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

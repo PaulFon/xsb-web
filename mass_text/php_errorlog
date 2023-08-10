@@ -1,0 +1,4 @@
+[23-Apr-2020 15:38:52 CST6CDT] PHP Parse error:  syntax error, unexpected 'readfile' (T_STRING), expecting ',' or ';' in /home/canonica/public_html/mass_text/Mass_2020_04_19_HR.php on line 16
+[23-Apr-2020 15:48:45 CST6CDT] PHP Parse error:  syntax error, unexpected '2' (T_LNUMBER), expecting ',' or ';' in /home/canonica/public_html/mass_text/Mass_2020_04_19_HR.php on line 17
+[23-Apr-2020 20:08:33 CST6CDT] PHP Parse error:  syntax error, unexpected '*', expecting end of file in /home/canonica/public_html/mass_text/Mass_2020_04_19_HR.php on line 38
+[03-Aug-2021 19:33:16 UTC] PHP Fatal error:  Switch statements may only contain one default clause in /home/customer/www/canonicaleye.org/public_html/mass_text/assembleTranscript.php on line 245

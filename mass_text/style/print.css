@@ -1,0 +1,528 @@
+/* These rules reset a core set of elements so that they will appear consistent across browsers. Without these rules, content styled with an h1 tag, for example, would appear in different places in Firefox and Internet Explorer because each browser has a different top margin default value. By resetting these values to 0, the elements will initially be rendered in an identical fashion and their properties can be easily defined by the designer in any subsequent rule. */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	border: 0;
+	margin: 0; /* Sets the margin properties for an element using shorthand notation */
+	padding: 0; /* Sets the padding properties for an element using shorthand notation */
+	vertical-align: baseline;
+	font: 1em arial; color:#333;
+	background-image:none!important;
+	/*font: 1.3em arial;
+	color: #333;*/
+}
+code { font : bold 8pt 'courier new',monotype; color:black; background-color:#f1f1f1; display:inline-block; padding : 1px 2px; border-radius:4px; -moz-border-radius:4px; }	
+div.hasHeader h1, div.hasHeader h2, div.hasHeader h3, div.hasHeader h4, div.hasHeader h5, div.hasHeader h6 {
+	padding-top:1px; 
+}
+td.CS_Layout_TD { vertical-align:top !important; font:10pt arial;}
+html {overflow-y:scroll;text-align:center;}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: separate;
+	}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+} 
+blockquote, q {
+	quotes: "" "";
+}
+#maincontent strong {color:black;}
+#maincontent li, #maincontent p, #maincontent {font-size:1.45em; line-height:1.5em; margin-left:0in;}
+em {font-style:italic;} 
+
+/***** END:Core Style Resets *****/
+
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Generic Style Definitions - These are classes that can be applied to any element to achieve the desired result. 
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+.floatRight { float: right; }
+.floatLeft { float: left; }
+.clear { clear: both; }
+img.floatLeft { margin: 2px 10px 2px 2px; }
+img.floatRight { margin: 2px 2px 2px 10px; }
+.picLeft {	margin:0px 10px 10px 0!important; padding:0; float:left;}
+.picRight {margin: 10px 0 10px 10px;padding: 0;float: right;}
+.allCaps { text-transform: uppercase; }
+.alignRight { text-align: right; }
+.alignLeft { text-align: left; }
+.alignCenter { text-align: center; }
+.noListStyle { list-style: none !important; margin-left:10px;list-style-position:outside; }
+.noListStyle a { padding-right:15px; }
+.smallText { font-size: .8em; }
+.normalText { font-size: 1.3em; }
+.largeText { font-size: 1.6em; }
+.border { border: 1px solid #c6c5c1; margin: 6px 0px; padding:8px; font-size:0.95em; background-color:#f3f3e3;  }
+.boxRight { border: 1px solid #c6c5c1; width:30%; margin: 6px 0px 6px 12px; padding:8px; font-size:0.95em; background-color:#f3f3e3;  }
+.smallForm { font-size: .8em; }
+.noMargin { margin: 0 !important; }
+.hidden { display:none;} .visible { display: block; }	
+.boldSpaced { font-weight:700!important; letter-spacing:0.1em; font-size-adjust:-0.15; color:black;}
+li.boldSpaced {margin-left:15px; margin-top:6px; margin-bottom:0px; letter-spacing: normal; font-size-adjust:-0.5; }
+li.boldSpaced:first { margin-top:10px; }
+.lbl { width:50px; float:left; vertical-align:baseline; line-height:15pt; font:9pt arial; color:#333;}
+.inputText { font: 9pt arial; color:#333; border:1px solid #999; width: 290px; margin: 2px;}
+
+p span.subheader { font:bold 11pt arial; color:darkgoldenrod; margin : 15px 0px 5px 0px; display: block;}
+.subsubhead { font : bold 11pt arial; margin: 15px 0px 5px 0px;  display:block; color:darkgoldenrod; }
+#solidline { display:none;}
+
+.subtle { text-decoration:underline; font-weight:400; color : #008061; }
+/*.boxContent { border:1px solid #666; margin:5px 0px; padding : 10px; border-radius:3px;background-color:#ddf3ff; -moz-border-radius:3px; box-shadow: 1px 1px 5px #999; -moz-box-shadow: 1px 1px 5px #999;}
+.boxContent * { font: 1.15em arial; color:#000; } */
+.boxContent { margin:54px 0px 0px 0px; padding : 15px 20px 10px 0px; color: #666; }
+.boxContent ul { font-size:  0.9em; color:#000; margin-top:20px;line-height:1.5em; text-align:right;} 
+.boxContent * { font:  italic 1.18em 'times new roman',times,serif,arial; color:#000;line-height:1.7em; text-align:right;} 
+
+.tbl3 { border:2px solid black; margin : 10px 0px}
+.tbl3 th { background-color:#008061; color:white; text-align:center; padding : 3px; font:9pt arial; }
+.tbl3 td { padding : 3px; border-right:1px solid #999; font:9pt arial;}
+select { display:none!important;}
+
+#contentarea div#scribeI, #contentarea div#scribeI * { font-size:13pt!important;line-height:14pt; } 
+
+.padding-right10 { padding-right:10px; }
+.padding-right25 { padding-right:25px; }
+.padding-right50 { padding-right:50px; }
+
+.padding-top10 { padding-top:10px; }
+.padding-top25 { padding-top:25px; }	
+.padding-top50 { padding-top:50px; }
+
+.bulletSquare { list-style-type: square; margin : 0px; }
+.strong, strong { font-weight:700!important; }
+.green { color:#080601; }
+.black{ color:#000000!important; }
+.gray, .grey { color:#666666!important; }
+
+.white { font: 400 10px arial!important; color:#ffffff!important;  }
+.CS_Textblock_Text {color:#333!important;}
+.textBlockHead { font-size: 1.4em; margin : 10px 0px; }
+.verticalAlignTop { vertical-align:top;}
+/*  TO CORRECT NON-STANDARD METHOD OF USING U TAG */
+u { display:block; text-decoration:none; font-size:12px; font-weight:700; margin : 15px 0px 5px 0px; color:#339; padding : 0px; }
+
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm	
+Column Setup - These classes are applied to the BODY element and determine column proportions and visibility on the given page. 
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+div#contentWrapper { position: inherit; border:0px; }
+div#contentArea, .leftColumn, .rightColumn { overflow: hidden; }
+div#contentArea, .leftColumn { float: left; }
+
+.rightColumn { float: right; }
+body .leftColumn {float: left; margin: 0; padding: 0;   background-color: transparent!important; background-repeat: repeat-x; }
+#pageTools { display:none!important; }
+
+/* WATCH THIS - Removed from IE6 Path */
+*+html div.twoColumn, *+html div.threeColumn {  clear: both;}
+div.twoColumn .column1, div.twoColumn .column2 { float: left; overflow: visible; width: 48%; }
+.twoColumn .column2 { float: right !important;  }
+div.threeColumn .column1, div.threeColumn .column2, div.threeColumn .column3 { float: left; margin-right: 3%; overflow: visible; width: 31%; }
+div.threeColumn .column3 { margin-right: 0; }
+
+/* The body is the outermost layout component and contains the visible page content. Setting properties for the body element will help to create consistent styling of the page content and more manageable CSS. Besides using the body element to set global properties, it is common to use the body element to set the background color of the page and create a centered container for the page content to display. */
+html { text-align: center; }
+/* Centers the page content container in IE 5 browsers. */
+body { color: #333333; font:75%/1.6em Arial, Helvetica, sans-serif; text-align: left; /* Redefines the text alignment defined by the html element. */ }
+/* Commonly used to style page titles. */
+h1 { font-size: 2em; font-weight: bold; margin: 18px 0 16px; }
+/* Commonly used to style section titles. */
+h2 { font-size: 1.5em; font-weight: bold; margin: 18px 16px 16px; }
+h3 { font-size: 1.3em; font-weight: bold; margin: 18px 0 16px; }
+h4 { font-size: 1.3em; font-weight: bold; margin: 18px 0 0px; }
+/* Sets the default style for links. */
+a, a:link { color: #008061; font-weight: bold; text-decoration: none; }
+/* Sets the style for links on mouseover. */
+a:hover { text-decoration: underline; }
+/* Default margins for content
+p, table {margin:0 16px 16px;} */
+/*Sets font-size relative to body font size
+p, ul, ol, table {font-size:1.2em;} */
+/* This is a container for the page content. It is common to use the container to constrain the width of the page content and allow for browser chrome to avoid the need for horizontal scrolling. For fixed layouts you may specify a container width and use auto for the left and right margin to center the container on the page. For liquid layouts you may simply set the left and right margins to center the container on the page. */
+
+#outerWrapper {   background-color: #fff; border:0px;}
+.readings .contentarea, 
+.contentarea {line-height:normal!important; }
+.contentarea li strong { font : bold 11pt arial!important; letter-spacing:-0.1pt; line-height:11pt!important;}
+td { font: 1.4em/1.5em Arial, Helvetica, sans-serif; }
+ /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Header Styles - Styles for elements found in the Header of the page. This section includes the site name, preliminary navigation (toolbar), and the search function.  
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+#header { height: 109px; margin: 0; padding: 0; position: relative; page-break-after:avoid!important; }
+#headerLeft { float: left; height: 109px; margin: 0; padding: 0; }
+#headerRight { float: right; height: 109px; margin-right: 12px; padding: 0; }
+#headerRight a { font-size:12px; }
+.headerTools { margin: 0; padding: 5px 0 0; }
+.headerTools a { font-size:10px!important;}
+#search { display:none;}
+
+
+#navigationTopBar { display:none;}
+#header { background-repeat: no-repeat;border-left: 1px solid #fff; border-right: 1px solid #fff; }
+#headerLeft {  }
+#headerRight { display:none;}
+	#headerRight a:link, #headerRight a:visited { color: #393939; }
+.headerSearch {display:none;}
+#searchForm { display:none;}
+.searchButton { display:none;}
+#search input[type="text"], #btm_search input[type="text"] { color: #000; font-family: Arial; font-size: 0.7em; height: 12px; width: 250px; }
+.searchForm { display:none;}
+#navigationTopBar {display:none;}
+
+.headerSearch .searchForm, .headerSearch .searchButton, .headerSearch label {float:left; clear:none; display:none; height:24px; padding:0px; margin:0px;}
+.headerSearch .searchForm {height:16px;padding:1px;display:none;}
+.headerSearch .searchButton {margin-left:-3px;display:none;}
+.headerSearch label {font-size: 15px; padding-top:6px;display:none;}
+
+/*
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Features Styling - Styling for the Feature Story area and Must See area contained in this section.
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+#feature { border-left: 1px solid #fff; border-right: 1px solid #fff; clear: both; height: 226px; }
+#featureLeft { float: left;margin: 0; padding: 0; width: 619px; }
+#featureRight { float: right;  margin: 0; padding: 0; width: 330px; }
+#sectiontitle { margin: 0 0 10px 0; overflow: hidden; }
+#featureLeft {  }
+#featureRight { background-color: transparent!important;  }
+#featureRight .title { border-bottom: 1px solid #fff; color: #fff; font-size: 1.3em; line-height: 1.4em; padding-left: 6px; }
+*/
+
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+MainMenu Styling - Drop down menu creation and styling of ul#navigation-l is handled in menu_style.css. Styling for the Top Navigation and Left Navigation are contained in this section. The width of the left navigation is controlled by the width of the left column. 
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+
+/********************************************
+	audio / video / graphics pages	*/
+
+.resource { padding : 0px; margin-top:0px!important; width:470px;}
+.resourceInfo p { margin:0px!important; padding:0px!important; line-height:12px; font-size:11px;}
+.resourceInfo { display:block; margin:0px 0 5px 135px!important; padding:0!important; width:330px;}
+.resourceInfo p.more strong { font : bold 12pt arial!important; color:#666666!important;}
+.resourceInfo p.more a { font:bold 12px arial; }
+.resourceInfo p.more { margin-top : 10px!important; }
+.resourceInfo p.resourceDate { padding : 0px 0px 3px 0px!important; margin:0px!important; color:#333333;font-size:11px; }
+.resourceInfo a { font-size:13px; }
+.audioControl { width:330px;height:20px;margin-top:5px;}
+h3.resourceType { margin-bottom:2px!important; padding-bottom:0px!important; font-size:14px!important;}
+h3.resourceType a { color: #000000 !important; font-size: 8pt; letter-spacing: 1pt; text-transform: uppercase;}
+.resource .picLeft img {width:125px!important;}
+
+/*Left Navigation styling - secondary pages*/
+ul#leftnavigation { display:none;}
+#mainNavigation { display:none;}
+
+.index-tertiary { color: #666; font-size: 1em; text-transform: none; margin-left : 12px; line-height:0.95em!important; }
+.selectedPage * { border:0px!important; padding : 0px!important; line-height:0.75em; margin:0px;}
+ 
+ /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Content Area Styling - The content element positioning.
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+
+div#contentarea {
+/*
+	margin: 7px 0 0 0;
+	padding: 0 30px 10px 0;
+	width: 460px;
+	float: right;*/
+	page-break-before:avoid;
+	font-size:13px!important; line-height:auto;
+	padding-bottom : 20px;  
+}
+#contentarea h1 {
+	margin : 2px 0px 10px 0px;
+	color:#333333;
+	padding: 3px 2px;page-break-before:avoid;
+	font-family: Arial; 
+	font-size: 22px!important; line-height: 100%; text-transform: capitalize; font-variant:small-caps;
+	letter-spacing:-1px;
+    border-top:1px solid #666666;
+    border-bottom:1px solid #666666;
+}
+#contentarea td { 
+	font-size:1.1em;
+	font-weight:normal;
+	color:#333;
+}
+#columnlist td.firstcolumn { 
+	padding-right:20px;
+	font : bold 0.9em arial!important; text-transform:uppercase; }
+}
+#columnlist td { padding-right: 25px; padding-bottom:0px;}
+#contentarea ul li, #contentarea ol li {
+	display:list-item;
+	/*list-style: outside;*/
+	font-weight:normal;	
+	float:none;
+	margin:0 0 0 10px;
+	padding:1px;
+	width:90%;
+	vertical-align:top;	
+	line-height:1.2em;	
+	font-size : 14px;
+}
+#contentarea img.line { display:none; }
+#contentarea ul li strong { 
+	display:inline-block;
+	margin-top:5px; 
+	color: black;
+}
+p ol, p ul { font-size: 1.4em!important;  }
+#contentarea ol { list-style:decimal!important; }
+#contentarea  ol li ol, #contentarea  ul li ul, #contentarea ul li ol, #contentarea  ol li ul {
+	margin:5px 0 0 10px; 	
+}
+#contentarea  ol li ol, #contentarea  ul li ol {
+	list-style: decimal outside!important;	
+}
+#contentarea  ul li ul, #contentarea  ol li ul {
+	list-style: circle outside;	
+}
+.greenBtn {color:#fff; display:inline-block; letter-spacing:1px; padding:3px 2px 2px 3px; width:auto; color:#fff; font-size:11px; font-weight:bold; text-transform:uppercase; background-color:#008061; border:3px solid #6e6e6e; cursor:pointer;}
+.greenBtn:link, .greenBtn:visited {color:#fff;}
+.greenBtn:hover {color:#fff;text-decoration:underline;}
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Breadcrumbs Styling - The breadcrumbs are the trail the visitor followed to reach the current page.
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+div.breadcrumbtext {
+	clear: both; height: 16px; margin-top:1px; padding-top:2px; font-size:10px!important; text-transform:capitalize!important;
+}
+div.breadcrumbtext a { display:inline-block; margin-left: 3px; background-image:none; font-size:10px!important;}
+span.breadcrumbtext { display:inline-block; margin-left: 10px; font-size:10px!important; }
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Content Elements - Styling of the container for the content columns.  
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+div#pageTools {display:none;}
+
+#solidline, #imgLine { display:none;}
+
+.capLetter { font-size: 1.25em; font-family:times,serif; letter-spacing: .09em; margin-right:-2px; }
+.moreButton { display: inline; float: left; margin: 5px 0 20px 0; padding: 5px 8px; border: 1px solid #e1e1e1; font-family: Arial, Helvetica, sans-serif; font-size: 0.8em; text-align: center; text-transform: uppercase; }
+.moreButton:hover { background-color:#e1efe1; border:1px solid #c3c9c3; }
+.moreButton:hover a { color: black; }
+
+.readMore { display: inline; float: right; margin: -8px 5px 10px 0; padding: 1px 5px; cursor:pointer; font-family: Arial, Helvetica, sans-serif; font-size: 0.8em; color:#008061;text-transform: uppercase; }
+.readMore:hover { background-color:#e1efe1; }
+.readMore:hover a { color: black; }
+
+div#calendarArea { float: right; margin: 0; padding: 3px; width: 263px; 
+background-color:rgb(224,224,224);
+text-align: center; }
+	div#calendarArea h3 {  margin: 0; padding: 2px 5px 2px 5px;background-color: #b1b1b1; border: none; color: #5f5c5c; font-family: "Times New Roman", Times, serif; font-size: 1.3em; font-weight: normal; text-align: left; text-transform: uppercase; }
+.calendar { margin-top: 8px; }
+
+div#contentWrapper { clear: both; margin: 4px 0px; padding: 0; line-height:100%; font-size : 14px;}
+div#contentWrapper ul { font-size : 14px;}
+div#contentWrapper ol { list-style: decimal inside;  	font-size : 14px;}
+div#contentarea { background: none; }
+#contentarea p, ul, ol, table { font-size : 14px;}
+#contentarea p { line-height: 1.3em; margin-bottom: 8px; font-size : 14px;}
+#contentarea ul,
+#contentarea ol { 	font-size : 14px !important; margin: 0 16px 16px; }
+p ol. p ul { font-size : 14px !important;}
+
+.secrightColumn { background-color: #ededed; background-repeat: repeat-x; }
+
+body { font-size : 14px!important; }
+
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Footer Elements - Styling for the footer and any contained elements. 
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+
+.footerLeft { display:none;}
+.footerRight { display:none;}
+
+div#footerLinks  { display:none;}
+div#footer { display:none;}
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Panel Boxes - These boxes are expandable and resuable. They are currently used on the Home page in the right columns.
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+div.panelBox { display:none;}
+ul#relatedLinksUL li { display:none;}
+div.panelBox .calendar { display:none;}
+
+.related-information-header {display:none;}
+.related-information-item {display:none;}	
+
+
+.CS_Element_PageIndex { padding : 5px; }
+.CS_Element_PageIndex a { margin :5px 0px; }	
+
+.mapBox {margin: 0 14px 0 14px; padding:0 16px 16px;}
+.viewmore, .readmore {display:none;}
+/*mmmmmmmmmmmmmmmm officesPages mmmmmmmmmmmmmmmm */
+/*mods for offices page */
+.interiorNav { display:block;}
+.interiorNavCol1 {
+	width: 240px;
+	float: left;
+}
+.interiorNavCol2 {
+	width: 240px;
+	float: right;
+}
+.interiorNav1 li, .interiorNav2 li {
+	list-style: none;
+}
+.officesPages h3 { font:bold 12pt arial!important;}
+.officesPages li {height:auto;padding-left:2px;margin-left:15px}
+.officesPages li li {font-size:.8em;}
+.officesPages .bookstore li {min-height:155px;list-style:none;padding:0px; margin: 0 0 15px 0;}
+.officesPages .bookstore li img {	height:155px;}
+.officesPages li img {float:left;	width:100px;height:80px;padding-bottom:2px;	margin-right:20px;	border:1px solid #ddd;}
+
+.officesPages {width:460px; padding-right:10px;}
+.officesPages ul {padding:0px; margin:0px;}
+.officesPages ul li h4 {display:block; padding-bottom:0px; margin-bottom:5px; margin-top:0px; margin-bottom:0px; font-size:14px!important; line-height:1.3}
+#contentarea p.officedescription { font-size:14px!important; margin : 0px;}
+.officesPages ul li p { font-size:14px!important; color:#000000; line-height:1.3!important; padding-bottom:12px!important;}
+#contentarea p.officedescription a {font-weight:normal!important; }
+.officesPages ul li span.date { font-size:14px; display:block; clear:right;}
+
+.officesPages h1 {clear:both;}
+
+
+
+.officesPages .interiorNavCol1 li, .interiorNavCol1 li a,  .interiorNavCol2 li, .interiorNavCol2 li a {
+	font-size:1.1em;
+	line-height: 1.1em;
+}
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Articles and other non-lists - Styling for semantic list elements that should not be displayed with bullets or numbers.
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+.contentList {list-style:none !important;}
+.contentList li {margin:0 0 16px;}
+.contentList h2 {margin:0;}
+.contentList p {margin:0 16px 0 16px;}
+#contentarea p.newsReleaseKeywords { margin-top:20px!important; padding-top:3px!important; font:8pt arial!important; border-top:1px solid #999!important; color:#555!important; }
+#contentarea h2#newsReleaseHeadline { font : bold 14pt arial; color:#666666; letter-spacing:-0.8pt; padding-right:60px; }
+#contentarea div#newsReleaseBody { margin : 0px 0px 20px 0px!important; }
+.pressRelease h3 {margin-left:7.5em; margin-top:-1.2em; font-size:1em;}
+.searchResults h3 {margin-bottom:5px;}
+.searchResults {font-size:1em;}
+
+#contactForm legend {
+	font-size:1.4em;
+	font-weight:bold;
+	padding-left:1em;
+	margin-bottom:1em;
+	padding-top:1em;
+}
+#contactForm input, #contactForm select, #contactForm textarea {margin-left:2em;}
+#contactForm input, #contactForm textarea {width:300px;}
+#contactForm .checkbox, #contactForm .button {width:auto;}
+#contactForm label {display:block; text-align:right; width:125px; float:left;}
+
+.genericNextBack {display:block; font-size:12px; padding:10px 0px;}
+
+/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+Subscibe Pages styles
+mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
+
+#contentarea.subscribePage .cboxList {display:block; width:725px;}
+#contentarea.subscribePage .cboxList .cboxListCol {width:32%}
+#contentarea.subscribePage .previewFeed a {color:blue;}
+.previewFeed {display:block; width:95%; height:400px; overflow:scroll; border: 1px solid #4a4334; background-color:#f5f5f5;}
+/* Tooltips */
+		.tooltip {
+			cursor: pointer; text-decoration: none;
+			position: relative; text-decoration:none!important;
+		}
+		.tooltip span {
+			margin-left: -999em;
+			position: absolute; text-decoration:none!important;
+		}
+		.tooltip:hover span {
+			position: absolute; left: 1em	; top: 2em; z-index: 99;
+			margin-left: 0; width: 250px; 
+			color: #333333; text-decoration:none!important;
+		}
+		.tooltip:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltip:hover em {
+			display: block; padding: 0.2em 0 0.6em 0;text-decoration:none!important;
+		}
+		.classic { padding: 0.9em 1.25em; background-color:#f4f4f4; border:3px solid black; color:black;-moz-border-radius:5px; -webkit-border-radius:5px; -moz-box-shadow:2px 2px 12px #555555; -webkit-box-shadow:2px 2px 12px #555555; text-decoration:none!important; }
+
+
+/*
+///////////////////////////////////////////////////////////////////////
+// 	added by KHRIS HOVEN
+*/
+		
+.rightColumn { 
+	/* right column */
+	display:none;}
+	
+#leftnav { display:none;}
+#leftnav.emptyColumnOne { width:175px; min-height:200px; float:left!important; }
+
+#imgHeading { margin:-2px 0px 12px 0px; }
+div#contentarea { float: none; margin: 0px; padding: 2px 4px 12px 10px; width:auto; line-height:100%; font-size:12px!important; }
+a#contentarea { display:none!important; }
+
+
+tr.backgroundBlack td a { color:white!important; }
+tr.backgroundBlack td { color:white!important; font-size:90%!important; padding-top:4px!important; padding-left:4px!important; border-right:1px solid white!important; }
+.second-level-nav { margin : 6px 2px 6px 15px; }
+table.rowSpaceDouble td { padding : 12px!important;}
+td.rowSpaceDouble {padding : 12px!important;}
+.CS_DataSheet_Data_Row_Alternate 	{ padding :3px!important;}
+.CS_DataSheet_Data_Row	{ padding:3px!important;}
+.CS_DataSheet_Header_Row td { background-color:rgba(0,153,0,0.4); padding : 3px 2px; }
+
+li strong a { font:bold 11pt arial; }
+.personnel { font : 12px arial; color:black; line-height:14px; }
+.personnel em { font : bold 11px arial; color: #808080; display:block; margin-top:5px; margin-bottom:-5px;} 
+.link { cursor:pointer; text-decoration:underline; }
+.linkbold { cursor:pointer; text-decoration:none; font-weight:bold; display:inline-block; padding :1px 2px 1px 12px; outline:1px solid gray; background-color: transparent!important; font-size:8pt!important; background-repeat : no-repeat; color:#333;}
+#montage { float:right; margin:0px; } 
+
+.margBottom25 { margin-bottom : 25px; }
+
+#maincontent * {color:#808080!important; font-size:1.06em!important; line-height:auto;}
+#maincontent td p { font-size:1em!important; }
+.CS_DataSheet_Data_Row { border-top:1px dotted :#999; background-color:#fff; font:9pt arial!important; padding : 3px;  }
+.CS_DataSheet_Data_Row_Alternate { background-color:transparent!important; font:9pt arial!important; padding:3px;}
+.CS_DataSheet_Data_Row_Alternate:hover { background-color:#EFE; color:BLACK; outline:1px solid #151; }
+.CS_DataSheet_Data_Column { padding : 3px; } 
+#slideshowHolder { border-left:2px solid #eee; border-right:2px solid #eee;}
+#contentarea h3.headline { margin-bottom : 12px; margin-top:0px; padding-right:30px; font:bold 16px arial; letter-spacing:-0.2pt; color:#666!important; }
+#contentarea div.news-release { background-color:#ffffff; border-bottom : 1px dotted #868686; color:#808080; padding : 10px 10px 15px 5px; font:12px arial!important;}
+#contentarea div.news-release:hover h3.headline {color:#000099; }
+#contentarea div.news-release p { font : 12px arial!important; }
+li a.news-link { font: bold 9pt arial; margin-bottom:10px; }
+@page {
+  margin: 1in; width:100%;
+}
+div#navDates {
+  display:none!important;
+}
+ 
+.noPrint {
+    display:none!important;
+}
+.chLink {display:none;}
+div#contentarea.readings { width:6.4in!important; font-size:14px!important; }
+body, #contentarea, .contentarea, * { background-image:none!important; }
+#print-copyright { display :block!important; color:black; font:9pt arial; text-align:center; font-weight:400; padding-top:15px; }
+#verseMark { display:none!important;}
+div.bibleReadingsWrapper .poetry { font-size:12pt!important; color:black!important; line-height:normal!important; }
+div.bibleReadingsWrapper h4, .contentarea h3 { font-size-adjust:0.666; }
+div.bibleReadingsWrapper { width:6in; max-width:6in!important;}
+.contentarea #NABcopyright { font-size: 11pt!important; color:black!important; letter-spacing:normal!important;}
+* { max-width:6.4in!important; }
+
+
+#scriptureDiv { display:none!important; }

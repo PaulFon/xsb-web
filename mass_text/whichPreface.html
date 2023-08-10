@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mass Info Form</title>
+
+  <!--
+  Name: Paul Fontaine
+  Date: 07/12/2020
+  Date modified 07/12/2020
+  Program Description: This program presents a form to prompt user for the
+  for which Preface will be used.
+  -->
+
+<h1>Enter info about which preface</h1>
+
+<meta name="viewport" content="width=device-width, initial-scale=1"> <!-- This line designates a responsive page -->
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+input[type=reset] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=reset]:hover {
+  background-color: #45a049;
+}
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 20%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 80%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+    
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 180px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <form action="index.php" method="post" id="" class="">
+
+
+<div class="row">
+      <div class="col-25">
+        <label for="whichPref">Preface</label>
+      </div>
+      <div class="col-75">
+          
+          <div class="tooltip">
+              <input type="radio" name="whichPref" value="adv1" required >Advent 1
+              <span class="tooltiptext">Advent 1...</span>
+          </div>
+          
+          <div class="tooltip">
+              <input type="radio" name="whichPref" value="adv2" >Advent 2
+              <span class="tooltiptext">Second advent </span>
+          </div>
+        
+        <input type="radio" name="whichPref" value="nativ2" >Nativity 1
+        <input type="radio" name="whichPref" value="nativ2" >Nativity 2
+        <input type="radio" name="whichPref" value="nativ2" >Nativity 3
+        <input type="radio" name="whichPref" value="epip" >Epiphany<br>
+
+        <input type="radio" name="whichPref" value="lent1" >Lent 1
+        <input type="radio" name="whichPref" value="lent2" >Lent 2
+        <input type="radio" name="whichPref" value="lent3" >Lent 3
+        <input type="radio" name="whichPref" value="lent4" >Lent 4
+        <input type="radio" name="whichPref" value="pass1" >Passion 1
+        <input type="radio" name="whichPref" value="pass2" >Passion 2<br>
+
+        <input type="radio" name="whichPref" value="easter1">Easter 1
+        <input type="radio" name="whichPref" value="easter2">Easter 2
+        <input type="radio" name="whichPref" value="easter3">Easter 3<br>
+        <input type="radio" name="whichPref" value="easter4">Easter 4
+        <input type="radio" name="whichPref" value="easter5">Easter 5
+        <input type="radio" name="whichPref" value="ass1">Ascension 1
+        <input type="radio" name="whichPref" value="ass2">Ascension 2<br>
+        <input type="radio" name="whichPref" value="pentecost">Pentecost<br> 
+        Ordinary Time<br>
+        <input type="radio" name="whichPref" value="ot1">Sunday 1
+        <input type="radio" name="whichPref" value="ot2">Sunday 2
+        <input type="radio" name="whichPref" value="ot3">Sunday 3
+        <input type="radio" name="whichPref" value="ot4">Sunday 4
+        <input type="radio" name="whichPref" value="ot5">Sunday 5
+          
+        <div class="tooltip">
+            <input type="radio" name="whichPref" value="ot6" required >Ordinary time 6
+            <span class="tooltiptext">For in you we live and move and have our being, and while in this body...</span>
+        </div>
+
+        <input type="radio" name="whichPref" value="ot7">Sunday 7
+        <input type="radio" name="whichPref" value="ot8">Sunday 8<br>
+
+        <input type="radio" name="whichPref" value="he1">Holy Eucharist 1
+        <input type="radio" name="whichPref" value="he2">Holy Eucharist 2<br>
+
+        <input type="radio" name="whichPref" value="bvm1">Blessed Virgin Mary 1
+        <input type="radio" name="whichPref" value="bvm2">Blessed Virgin Mary 2
+        <input type="radio" name="whichPref" value="apost1">Apostles 1
+        <input type="radio" name="whichPref" value="apost2">Apostles 2<br>
+
+        <input type="radio" name="whichPref" value="saints1">Saints 1
+        <input type="radio" name="whichPref" value="saints12">Saints 2
+        <input type="radio" name="whichPref" value="holyM1">Holy Martyrs 1
+        <input type="radio" name="whichPref" value="holyM2">Holy Martyrs 2<br>
+
+        <input type="radio" name="whichPref" value="holyP1">Holy Pastors
+        <input type="radio" name="whichPref" value="holyP2">Holy Virgins and Religious<br>
+
+        <input type="radio" name="whichPref" value="comm1">Common 1
+        <input type="radio" name="whichPref" value="comm2">Common 2
+        <input type="radio" name="whichPref" value="comm3">Common 3
+        <input type="radio" name="whichPref" value="comm4">Common 4
+        <input type="radio" name="whichPref" value="comm5">Common 5
+        <input type="radio" name="whichPref" value="comm6">Common 6<br>
+
+        <input type="radio" name="whichPref" value="dead1">The Dead 1
+        <input type="radio" name="whichPref" value="dead2">The Dead 2
+        <input type="radio" name="whichPref" value="dead3">The Dead 3
+        <input type="radio" name="whichPref" value="dead4">The Dead 4
+        <input type="radio" name="whichPref" value="dead5">The Dead 5
+   </div>
+</div>
+
+    <div class="row">
+      <input type="submit" name="submit" value="submit" />
+      <input type="reset" name="reset" value="reset" />
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

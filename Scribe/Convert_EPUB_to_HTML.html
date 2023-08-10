@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EPUB to HTML Converter</title>
+    <script src="https://unpkg.com/ebooklib/dist/ebooklib.js"></script>
+    <script>
+      async function convertEPUBToHTML() {
+        var input = document.getElementById('input-file');
+
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var contents = e.target.result;
+          var book = ePub(contents);
+
+          return new Promise(function (resolve, reject) {
+            book.ready.then(function () {
+              var extractedContent = '';
+              book.spine.contents.forEach(function (content) {
+                extractedContent += content.document.documentElement.innerHTML;
+              });
+              resolve(extractedContent);
+            }).catch(reject);
+          });
+        };
+
+        var extractedContent = await new Promise((resolve) => {
+          reader.readAsArrayBuffer(file);
+          reader.onloadend = function () {
+            resolve(reader.result);
+          };
+        });
+
+        var contentArray = new Uint8Array(extractedContent);
+        var encoder = new TextEncoder();
+        var contentBytes = encoder.encode(contentArray);
+        var blob = new Blob([contentBytes], { type: 'text/html' });
+        var url = URL.createObjectURL(blob);
+
+        var element = document.createElement('a');
+        element.setAttribute('href', url);
+        element.setAttribute('download', 'converted.html');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+
+        URL.revokeObjectURL(url);
+      }
+    </script>
+  </head>
+  <body>
+    <input type="file" id="input-file" accept=".epub" />
+    <button onclick="convertEPUBToHTML()">Convert and Download</button>
+  </body>
+</html>

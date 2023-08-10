@@ -1,0 +1,12 @@
+[30-Jul-2020 03:42:29 CST6CDT] PHP Fatal error:  Uncaught Error: Call to undefined function is_main_site() in /home/canonica/public_html/wp-includes/update.php:813
+Stack trace:
+#0 {main}
+  thrown in /home/canonica/public_html/wp-includes/update.php on line 813
+[30-Jul-2020 03:42:31 CST6CDT] PHP Fatal error:  Uncaught Error: Call to undefined function is_main_site() in /home/canonica/public_html/wp-includes/update.php:813
+Stack trace:
+#0 {main}
+  thrown in /home/canonica/public_html/wp-includes/update.php on line 813
+[30-Jul-2020 10:52:53 CST6CDT] PHP Fatal error:  Uncaught Error: Call to undefined function feed_content_type() in /home/canonica/public_html/wp-includes/feed-atom-comments.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/canonica/public_html/wp-includes/feed-atom-comments.php on line 8
