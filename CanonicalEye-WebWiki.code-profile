@@ -1,0 +1,12 @@
+{
+  "$schema": "vscode://schemas/profiles/1.0",
+  "name": "CanonicalEye (Web + Wiki)",
+  "settings": {
+    "editor.formatOnSave": true
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode"
+    ]
+  }
+}
