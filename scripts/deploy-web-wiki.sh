@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MSG=${1:-"Quick deploy"}
+# Flags/args
+DRY=""
+MSG="Quick deploy"
+
+# Parse args: support --dry-run / -n and -m "message" or a single positional message
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run|-n) DRY="-n"; shift ;;
+    -m) shift; MSG="${1:-$MSG}"; shift || true ;;
+    --) shift; break ;;             # end of flags
+    *) MSG="$1"; shift ;;           # positional message
+  esac
+done
+
+if [[ -n "$DRY" ]]; then
+  echo "🔎 Dry run enabled (no changes will be made)"
+fi
 
 echo "==> Git commit & push"
 git add .
 git commit -m "$MSG" || echo "Nothing to commit"
 git push origin main
 
-# Usage:
-#   ./scripts/deploy-web-wiki.sh         # real deploy
-#   ./scripts/deploy-web-wiki.sh --dry-run  # preview only
-
 REMOTE_ALIAS="xsb-lightsail"
 
-DRY=""
-if [[ "${1-}" == "--dry-run" ]]; then
-  DRY="-n"
-  echo "🔎 Dry run enabled (no changes will be made)"
-fi
-
-# Common excludes
-# Common excludes
+# Common excludes (protect Mass and local tooling)
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -29,8 +34,8 @@ RSYNC_EXCLUDES=(
   "--exclude=.gitignore"
   "--exclude=scripts"
   "--exclude=mass_site"
-  "--exclude=mass"        # <— prevent deleting the live Mass site
-  "--exclude=mass/"       # <— double-safe
+  "--exclude=mass"
+  "--exclude=mass/"
 )
 # Tuned flags: -O avoids dir mtime churn; --itemize-changes shows exactly what changed
 RSYNC_FLAGS=(
@@ -41,13 +46,11 @@ RSYNC_FLAGS=(
   --human-readable
 )
 
-# WEB
 echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
 rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
   ./ \
   "${REMOTE_ALIAS}:/home/bitnami/htdocs/wwwroot/"
 
-# WIKI (optional if you have a local ./wiki folder)
 if [[ -d "wiki" ]]; then
   echo
   echo "==> Deploying WIKI → /home/bitnami/htdocs/wiki"
