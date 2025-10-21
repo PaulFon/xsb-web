@@ -21,6 +21,7 @@ if [[ "${1-}" == "--dry-run" ]]; then
 fi
 
 # Common excludes
+# Common excludes
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -28,8 +29,9 @@ RSYNC_EXCLUDES=(
   "--exclude=.gitignore"
   "--exclude=scripts"
   "--exclude=mass_site"
+  "--exclude=mass"        # <— prevent deleting the live Mass site
+  "--exclude=mass/"       # <— double-safe
 )
-
 # Tuned flags: -O avoids dir mtime churn; --itemize-changes shows exactly what changed
 RSYNC_FLAGS=(
   -avz ${DRY}
