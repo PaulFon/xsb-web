@@ -11,12 +11,10 @@ set -euo pipefail
 #   -m "message"     (commit message)
 # ===============================
 
-# Defaults
 DRY=""
 RUN_GIT="yes"
 MSG="Quick MASS deploy"
 
-# Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
@@ -31,7 +29,6 @@ if [[ -n "${DRY}" ]]; then
   echo "🔎 Dry run enabled (no rsync changes will be made)"
 fi
 
-# Optional Git step (skip when --dry-run unless --git provided)
 if [[ "${RUN_GIT}" == "yes" ]]; then
   echo "==> Git commit & push"
   git add -A
@@ -41,20 +38,15 @@ else
   echo "==> Skipping Git (dry run)"
 fi
 
-# SSH host alias (set in ~/.ssh/config)
 REMOTE_ALIAS="xsb-lightsail"
-
-# Paths
 SRC="mass_site/public-build/"
 DEST="/home/bitnami/htdocs/mass/"
 
-# Safety: ensure source exists
 if [[ ! -d "${SRC}" ]]; then
   echo "❌ Source folder not found: ${SRC}" >&2
   exit 1
 fi
 
-# Excludes
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -62,7 +54,6 @@ RSYNC_EXCLUDES=(
   "--exclude=.gitignore"
 )
 
-# Hardened rsync flags
 RSYNC_FLAGS=(
   -avz
   --itemize-changes
@@ -74,10 +65,9 @@ RSYNC_FLAGS=(
   --no-perms
   --no-group
   --modify-window=2
-  --chmod=F644,D755     # ensure Apache-readable perms on target
+  # (no --chmod here; macOS rsync 2.6.9 doesn't support it)
 )
 
-# Add dry-run if requested
 if [[ -n "${DRY}" ]]; then
   RSYNC_FLAGS+=( "--dry-run" )
 fi
@@ -86,6 +76,17 @@ echo "==> Deploying MASS → ${DEST}"
 rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
   "${SRC}" \
   "${REMOTE_ALIAS}:${DEST}"
+
+# Post-deploy permission fix (server-side), only on real deploys
+if [[ -z "${DRY}" ]]; then
+  echo "==> Normalizing permissions on server"
+  ssh "${REMOTE_ALIAS}" '
+    find /home/bitnami/htdocs/mass -type d -exec chmod 755 {} \; &&
+    find /home/bitnami/htdocs/mass -type f -exec chmod 644 {} \;
+  ' || {
+    echo "⚠️  Permission normalization failed (non-fatal)."
+  }
+fi
 
 echo
 echo "✅ MASS deployment ${DRY:+(dry run) }complete."
