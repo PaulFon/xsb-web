@@ -47,7 +47,6 @@ else
 fi
 
 # ---- Rsync config -------------------------------------------------------------
-# Optional one-time --checksum for initial sync correctness (see web-wiki script)
 RSYNC_FLAGS=(
   -avz
   ${DRY:+--dry-run}
@@ -60,8 +59,7 @@ RSYNC_FLAGS=(
   --no-perms
   --no-group
   --modify-window=2
-  -K
-  # --checksum   # (optional one-time, if needed)
+  # --checksum   # optional: one-time if rsync wants to recopy lots
 )
 
 RSYNC_EXCLUDES=(
@@ -69,19 +67,22 @@ RSYNC_EXCLUDES=(
   "--exclude=._*"
   "--exclude=.git"
   "--exclude=.gitignore"
+  "--exclude=.venv/"
   "--exclude=scripts"
   "--exclude=wiki"
   "--exclude=WEB"
   "--exclude=web"
-  "--exclude=.venv/"
 )
 # ------------------------------------------------------------------------------
 
-echo "==> Deploying MASS → /home/bitnami/htdocs/mass"
+# Ensure real target exists and is writable
+remote 'mkdir -p /home/bitnami/htdocs/wwwroot/mass; chown -R bitnami:bitnami /home/bitnami/htdocs/wwwroot/mass'
+
+echo "==> Deploying MASS → /home/bitnami/htdocs/wwwroot/mass"
 if [[ -d "mass_site/public-build" ]]; then
   rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
     mass_site/public-build/ \
-    "${DEST}:/home/bitnami/htdocs/mass/"
+    "${DEST}:/home/bitnami/htdocs/wwwroot/mass/"
 else
   echo "❌ mass_site/public-build/ does not exist. Build first:"
   echo "   python scripts/build-mass.py --date YYYY-MM-DD"
