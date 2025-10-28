@@ -47,10 +47,8 @@ else
 fi
 
 # ---- Rsync config -------------------------------------------------------------
-# For the very first pass from a new machine, you may uncomment --checksum below
-# to compare file contents (slower, but avoids timestamp/metadata churn).
-
-
+# If the first run from a new machine tries to recopy “everything”, optionally
+# uncomment --checksum for ONE real run, then re-comment for speed later.
 RSYNC_FLAGS=(
   -avz
   ${DRY:+--dry-run}
@@ -63,21 +61,19 @@ RSYNC_FLAGS=(
   --no-perms
   --no-group
   --modify-window=2
-  # --checksum   # (optional one-time, if needed)
+  # --checksum
 )
-
-
 
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
   "--exclude=.git"
   "--exclude=.gitignore"
+  "--exclude=.venv/"
   "--exclude=scripts"
   "--exclude=mass_site"
   "--exclude=mass"
   "--exclude=mass/"
-  "--exclude=.venv/"
 )
 # ------------------------------------------------------------------------------
 
@@ -85,6 +81,9 @@ echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
 rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
   ./ \
   "${DEST}:/home/bitnami/htdocs/wwwroot/"
+
+# Ensure wiki dir exists and is owned by bitnami (non-fatal if absent locally)
+remote 'mkdir -p /home/bitnami/htdocs/wiki; chown -R bitnami:bitnami /home/bitnami/htdocs/wiki'
 
 if [[ -d "wiki" ]]; then
   echo
