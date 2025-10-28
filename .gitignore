@@ -20,3 +20,4 @@ mass_site/public-build/
 
 # Other common ignores
 *.log
+*.bak
