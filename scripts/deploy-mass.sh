@@ -82,7 +82,7 @@ echo "==> Deploying MASS → /home/bitnami/htdocs/wwwroot/mass"
 if [[ -d "mass_site/public-build" ]]; then
   rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
     mass_site/public-build/ \
-    "${DEST}:/home/bitnami/htdocs/wwwroot/mass/"
+    "${DEST}:/home/bitnami/htdocs/mass/"
 else
   echo "❌ mass_site/public-build/ does not exist. Build first:"
   echo "   python scripts/build-mass.py --date YYYY-MM-DD"
