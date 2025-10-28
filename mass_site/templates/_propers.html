@@ -1,0 +1,22 @@
+<dl class="propers">
+  {% if missal.propers.entrance_antiphon_ref %}
+  <dt>Entrance Antiphon</dt>
+  <dd>{{ missal.propers.entrance_antiphon_ref }}</dd>
+  {% endif %}
+  {% if missal.propers.collect %}
+  <dt>Collect</dt>
+  <dd>{{ missal.propers.collect.text_ref }}</dd>
+  {% endif %}
+  {% if missal.propers.prayer_over_offerings %}
+  <dt>Prayer over the Offerings</dt>
+  <dd>{{ missal.propers.prayer_over_offerings.text_ref }}</dd>
+  {% endif %}
+  {% if missal.propers.communion_antiphon_ref %}
+  <dt>Communion Antiphon</dt>
+  <dd>{{ missal.propers.communion_antiphon_ref }}</dd>
+  {% endif %}
+  {% if missal.propers.prayer_after_communion %}
+  <dt>Prayer after Communion</dt>
+  <dd>{{ missal.propers.prayer_after_communion.text_ref }}</dd>
+  {% endif %}
+</dl>

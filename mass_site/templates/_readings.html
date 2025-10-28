@@ -1,0 +1,10 @@
+<ul class="readings">
+  {% for reading in readings %}
+    <li>
+      <strong>{{ reading.type.replace('_',' ') | title }}</strong>
+      — <span class="ref">{{ reading.osis }}</span>
+      {% if reading.response %}<div class="resp">R/. {{ reading.response }}</div>{% endif %}
+      {% if reading.incipit %}<div class="incipit">{{ reading.incipit }}</div>{% endif %}
+    </li>
+  {% endfor %}
+</ul>

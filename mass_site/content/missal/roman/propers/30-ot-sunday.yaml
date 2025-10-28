@@ -1,0 +1,22 @@
+uid: 2025-10-26-roman-sunday-30-ot
+rite: roman
+missal_edition: "Roman Missal, 3rd Typical Edition"
+rank: "Sunday"
+season: ordinary
+week: 30
+color: green
+title: "30th Sunday in Ordinary Time"
+date: 2025-10-26
+propers:
+  entrance_antiphon_ref: Ps.105.3-4
+  collect: { id: collect_a, text_ref: "Collect (Missal ref only)" }
+  prayer_over_offerings: { id: poo_a, text_ref: "Prayer over offerings (ref)" }
+  communion_antiphon_ref: Ps.20.6
+  prayer_after_communion: { id: pac_a, text_ref: "Prayer after Communion (ref)" }
+preface:
+  options: ["Ordinary Time I","Ordinary Time II"]
+options:
+  gloria: true
+  creed: true
+accessibility: { alt_text_done: false, contrast_reviewed: false }
+localization: { language: en }

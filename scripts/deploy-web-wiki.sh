@@ -1,32 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Flags/args
+# Defaults
 DRY=""
+RUN_GIT="yes"
 MSG="Quick deploy"
 
-# Parse args: support --dry-run / -n and -m "message" or a single positional message
+# Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run|-n) DRY="-n"; shift ;;
+    --dry-run|-n) DRY="-n"; RUN_GIT="no"; shift ;;
+    --git) RUN_GIT="yes"; shift ;;
     -m) shift; MSG="${1:-$MSG}"; shift || true ;;
-    --) shift; break ;;             # end of flags
-    *) MSG="$1"; shift ;;           # positional message
+    --) shift; break ;;
+    *) MSG="$1"; shift ;;
   esac
 done
 
 if [[ -n "$DRY" ]]; then
-  echo "🔎 Dry run enabled (no changes will be made)"
+  echo "🔎 Dry run enabled (no rsync changes will be made)"
 fi
 
-echo "==> Git commit & push"
-git add .
-git commit -m "$MSG" || echo "Nothing to commit"
-git push origin main
+if [[ "$RUN_GIT" == "yes" ]]; then
+  echo "==> Git commit & push"
+  git add .
+  git commit -m "$MSG" || echo "Nothing to commit"
+  git push origin main
+else
+  echo "==> Skipping Git (dry run)"
+fi
 
 REMOTE_ALIAS="xsb-lightsail"
 
-# Common excludes (protect Mass and local tooling)
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -37,7 +42,7 @@ RSYNC_EXCLUDES=(
   "--exclude=mass"
   "--exclude=mass/"
 )
-# Tuned flags: -O avoids dir mtime churn; --itemize-changes shows exactly what changed
+
 RSYNC_FLAGS=(
   -avz ${DRY}
   --delete

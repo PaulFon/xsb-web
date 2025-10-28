@@ -1,0 +1,20 @@
+uid: 2025-10-26-roman-sunday-30-ot
+calendar: roman
+scope: sunday
+season: ordinary
+week: 30
+year: B
+weekday_cycle: null
+rank: "Sunday"
+color: green
+title: "30th Sunday in Ordinary Time (Year B)"
+date: 2025-10-26
+readings:
+  - { order: 1, type: first_reading, osis: Jer.31.7-9, incipit: "Thus says the LORD: Shout with joy..." }
+  - { order: 2, type: responsorial_psalm, osis: Ps.126.1-6, response: "The Lord has done great things for us; we are glad indeed." }
+  - { order: 3, type: second_reading, osis: Heb.5.1-6, incipit: "Every high priest is taken from among men..." }
+  - { order: 4, type: alleluia, osis: 2Tim.1.10, verse: "Our Savior Jesus Christ destroyed death..." }
+  - { order: 5, type: gospel, osis: Mk.10.46-52, incipit: "As Jesus was leaving Jericho..." }
+notes: { lectionary_source: "Roman Lectionary (US)", text_policy: "references only" }
+accessibility: { alt_text_done: false, contrast_reviewed: false }
+localization: { language: en }

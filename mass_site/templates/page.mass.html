@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "_head.html" %}
+    {% include "_meta.html" %}
+    <title>{{ page.title }}</title>
+  </head>
+  <body class="container">
+    {% include "_header.html" %}
+    <main id="main">
+      <h1>{{ missal.title }}</h1>
+      <p class="lede">{{ page.description }}</p>
+
+      <section aria-labelledby="readings">
+        <h2 id="readings">Readings</h2>
+        {% include "_readings.html" %}
+      </section>
+
+      <section aria-labelledby="propers">
+        <h2 id="propers">Propers</h2>
+        {% include "_propers.html" %}
+      </section>
+    </main>
+    {% include "_footer.html" %}
+  </body>
+</html>
