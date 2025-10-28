@@ -2,37 +2,23 @@
 set -euo pipefail
 
 # Defaults
-DRY=""
-RUN_GIT="yes"
-MSG="Quick deploy"
+MSG="Quick deploy (ALL)"
 
-# Parse args
+# Pass-through CLI (we don’t reinterpret flags; we forward them verbatim)
+ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
-    --git) RUN_GIT="yes"; shift ;;
-    -m) shift; MSG="${1:-$MSG}"; shift || true ;;
-    --) shift; break ;;
-    *) MSG="$1"; shift ;;
+    -m) shift; MSG="${1:-$MSG}"; ARGS+=("-m" "${1:-$MSG}"); shift || true ;;
+    *) ARGS+=("$1"); shift ;;
   esac
 done
 
-if [[ "$RUN_GIT" == "yes" ]]; then
-  echo "==> Git commit & push"
-  git add .
-  git commit -m "$MSG" || echo "Nothing to commit"
-  git push origin main
-else
-  echo "==> Skipping Git (dry run)"
-fi
-
-echo
 echo "==> Deploying WEB/WIKI…"
-./scripts/deploy-web-wiki.sh $DRY -m "$MSG"
+./scripts/deploy-web-wiki.sh "${ARGS[@]:-}" || { echo "❌ WEB/WIKI deploy failed"; exit 1; }
 
 echo
 echo "==> Deploying MASS…"
-./scripts/deploy-mass.sh $DRY -m "$MSG"
+./scripts/deploy-mass.sh "${ARGS[@]:-}" || { echo "❌ MASS deploy failed"; exit 1; }
 
 echo
-echo "✅ All deployments complete ${DRY:+(dry run) }."
+echo "✅ ALL deployment complete."

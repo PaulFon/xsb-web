@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# --- SSH/Host config (alias with IP fallback) ---------------------------------
+HOST_ALIAS="xsb-lightsail"
+HOST_IP="35.174.112.225"
+HOST_USER="bitnami"
+SSH_KEY="${HOME}/.ssh/LightsailDefaultKey-us-east-1.pem"
+
+SSH_CMD=(ssh -i "$SSH_KEY" -o IdentitiesOnly=yes)
+DEST="${HOST_USER}@${HOST_ALIAS}"
+if ! "${SSH_CMD[@]}" -o BatchMode=yes -o ConnectTimeout=5 "${DEST}" true 2>/dev/null; then
+  DEST="${HOST_USER}@${HOST_IP}"
+fi
+RSYNC_SSH=(-e "ssh -i ${SSH_KEY} -o IdentitiesOnly=yes")
+rsync_safe() { rsync "${RSYNC_SSH[@]}" "$@"; }
+remote() { "${SSH_CMD[@]}" "${DEST}" "$@"; }
+# ------------------------------------------------------------------------------
+
 # Defaults
 DRY=""
 RUN_GIT="yes"
@@ -30,8 +46,6 @@ else
   echo "==> Skipping Git (dry run)"
 fi
 
-REMOTE_ALIAS="xsb-lightsail"
-
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -52,16 +66,16 @@ RSYNC_FLAGS=(
 )
 
 echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
-rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
+rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
   ./ \
-  "${REMOTE_ALIAS}:/home/bitnami/htdocs/wwwroot/"
+  "${DEST}:/home/bitnami/htdocs/wwwroot/"
 
 if [[ -d "wiki" ]]; then
   echo
   echo "==> Deploying WIKI → /home/bitnami/htdocs/wiki"
-  rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
+  rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
     ./wiki/ \
-    "${REMOTE_ALIAS}:/home/bitnami/htdocs/wiki/"
+    "${DEST}:/home/bitnami/htdocs/wiki/"
 else
   echo
   echo "==> Skipping WIKI (no local wiki/ folder)"
