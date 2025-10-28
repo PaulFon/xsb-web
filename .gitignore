@@ -21,3 +21,13 @@ mass_site/public-build/
 # Other common ignores
 *.log
 *.bak
+
+# Extra ignores
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.vscode/
+mass_site/public-build/
