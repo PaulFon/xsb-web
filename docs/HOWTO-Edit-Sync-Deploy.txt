@@ -1,0 +1,125 @@
+EDIT → SYNC → DEPLOY WORKFLOW (WWWROOT)
+=======================================
+
+This file documents the full workflow from local edits to deployment on Lightsail.
+
+------------------------------------------------------------
+0) One-time sanity checks
+------------------------------------------------------------
+ssh xsb-lightsail 'echo OK'          # should print OK
+git rev-parse --abbrev-ref HEAD      # should be 'main'
+
+------------------------------------------------------------
+1) Open the project
+------------------------------------------------------------
+# In VS Code: open the `WWWROOT` workspace
+/Users/paul/Library/CloudStorage/GoogleDrive-canonicaleye@gmail.com/My Drive/canonicaleye.org/WWWROOT
+
+# VS Code terminal opens here by default.
+
+------------------------------------------------------------
+2) Activate Python virtual environment
+------------------------------------------------------------
+source .venv/bin/activate
+
+------------------------------------------------------------
+3) Edit content
+------------------------------------------------------------
+- YAML, templates, PHP, HTML, Wiki, etc.
+- Missal YAMLs: mass_site/content/missal/...
+- Lectionary YAMLs: mass_site/content/lectionary/...
+
+------------------------------------------------------------
+4) Update date index (when adding new content)
+------------------------------------------------------------
+python scripts/update-date-index.py --write
+
+------------------------------------------------------------
+5) Build Mass page by date
+------------------------------------------------------------
+python scripts/build-mass.py --date 2025-10-26
+
+# or shortcut if added to ~/.zshrc
+massbuild 2025-10-26
+
+------------------------------------------------------------
+6) Git commit & push (Local → GitHub)
+------------------------------------------------------------
+git status
+git add -A
+git commit -m "Content/update: <what changed>"
+git push origin main
+
+------------------------------------------------------------
+7) Deploy to Lightsail
+------------------------------------------------------------
+
+# Preview (safe dry run)
+./scripts/deploy-all.sh --dry-run -m "Preview deploy"
+
+# Deploy everything (WEB/WIKI + MASS)
+./scripts/deploy-all.sh -m "Deploy site updates"
+
+# Deploy just WEB/WIKI
+./scripts/deploy-web-wiki.sh -m "Deploy web/wiki"
+
+# Deploy just MASS
+./scripts/deploy-mass.sh -m "Deploy mass"
+
+(What the scripts do: optional Git commit/push, then rsync with hardened flags:
+--delete --delete-delay --delete-excluded --omit-dir-times --no-perms --no-group --modify-window=2.
+MASS deploys to the real path /home/bitnami/htdocs/wwwroot/mass/.)
+
+Tip: First deploy from a different Mac may copy many files due to metadata. For one real run only, you can temporarily enable --checksum in the scripts, then comment it out for speed later.
+
+------------------------------------------------------------
+8) Verify on server (optional)
+------------------------------------------------------------
+ssh xsb-lightsail 'ls -ld /home/bitnami/htdocs/mass /home/bitnami/htdocs/wwwroot/mass'
+ssh xsb-lightsail 'ls -la /home/bitnami/htdocs/wwwroot/mass | head -n 20'
+
+------------------------------------------------------------
+9) Common fixes
+------------------------------------------------------------
+A) SSH alias not found:
+  Ensure ~/.ssh/config has xsb-lightsail and github.com, then:
+  chmod 600 ~/.ssh/config ~/.ssh/LightsailDefaultKey-us-east-1.pem
+  ssh xsb-lightsail 'echo OK'
+
+B) rsync error code 23 in dry run:
+  Usually harmless (simulated deletes). Do a real run. If persistent:
+  ssh xsb-lightsail 'chown -R bitnami:bitnami /home/bitnami/htdocs'
+  ./scripts/deploy-all.sh -m "Deploy after ownership"
+
+C) MASS mkdir 'File exists (17)':
+  Already solved by deploying to real path: /home/bitnami/htdocs/wwwroot/mass/
+
+D) Google Drive changed mtimes; rsync wants to copy tons:
+  Temporarily enable --checksum in both deploy scripts for ONE real run, then comment it out.
+
+E) Remove old WordPress (optional, backup first):
+  ssh xsb-lightsail 'tar -czf ~/wwwroot-backup-$(date +%F).tgz -C /home/bitnami/htdocs wwwroot'
+  ssh xsb-lightsail 'rm -rf /home/bitnami/htdocs/wwwroot/*'
+  ./scripts/deploy-web-wiki.sh -m "Clean replace of web/wiki"
+
+------------------------------------------------------------
+10) Quality-of-life helpers
+------------------------------------------------------------
+- Save VS Code workspace as WWWROOT.code-workspace
+- Optional zsh shortcut:
+
+massbuild() {
+  (
+    cd "/Users/paul/Library/CloudStorage/GoogleDrive-canonicaleye@gmail.com/My Drive/canonicaleye.org/WWWROOT" || return 1
+    source .venv/bin/activate
+    python scripts/update-date-index.py --write >/dev/null 2>&1
+    python scripts/build-mass.py --date "$1"
+  )
+}
+
+source ~/.zshrc
+massbuild 2025-10-26
+
+------------------------------------------------------------
+End of workflow document.
+------------------------------------------------------------
