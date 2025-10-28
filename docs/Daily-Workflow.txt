@@ -1,0 +1,51 @@
+DAILY WORKFLOW (xsb-web)
+========================
+
+This is the short version (keep printed or handy).
+
+------------------------------------------------------------
+1) Open project in VS Code
+------------------------------------------------------------
+code ~/Projects/xsb-web
+
+------------------------------------------------------------
+2) Activate Python virtual environment
+------------------------------------------------------------
+cd ~/Projects/xsb-web
+source .venv/bin/activate
+
+------------------------------------------------------------
+3) Update date index (when adding new content)
+------------------------------------------------------------
+python3 scripts/update-date-index.py --write
+
+------------------------------------------------------------
+4) Build Mass page by date
+------------------------------------------------------------
+python3 scripts/build-mass.py --date YYYY-MM-DD
+
+# Example:
+python3 scripts/build-mass.py --date 2025-10-26
+
+------------------------------------------------------------
+5) Git commit & push (sync with GitHub)
+------------------------------------------------------------
+git status
+git add -A
+git commit -m "Content/update: <what changed>"
+git push
+
+------------------------------------------------------------
+6) Deploy to Lightsail
+------------------------------------------------------------
+# Preview (safe dry run)
+./scripts/deploy-all.sh --dry-run -m "Preview deploy"
+
+# Deploy everything (WEB/WIKI + MASS)
+./scripts/deploy-all.sh -m "Deploy site updates"
+
+------------------------------------------------------------
+7) On the other Mac (to sync)
+------------------------------------------------------------
+cd ~/Projects/xsb-web
+git pull origin main
