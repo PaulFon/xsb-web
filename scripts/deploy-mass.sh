@@ -46,7 +46,23 @@ else
   echo "==> Skipping Git (dry run)"
 fi
 
-# Rsync settings
+# ---- Rsync config -------------------------------------------------------------
+# Optional one-time --checksum for initial sync correctness (see web-wiki script)
+RSYNC_FLAGS=(
+  -avz
+  ${DRY:+--dry-run}
+  --delete
+  --delete-delay
+  --delete-excluded
+  --human-readable
+  --itemize-changes
+  --omit-dir-times
+  --no-perms
+  --no-group
+  --modify-window=2
+  # --checksum   # (optional one-time, if needed)
+)
+
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -56,19 +72,13 @@ RSYNC_EXCLUDES=(
   "--exclude=wiki"
   "--exclude=WEB"
   "--exclude=web"
+  "--exclude=.venv/"
 )
-
-RSYNC_FLAGS=(
-  -avz
-  --delete
-  -O
-  --itemize-changes
-  --human-readable
-)
+# ------------------------------------------------------------------------------
 
 echo "==> Deploying MASS → /home/bitnami/htdocs/mass"
 if [[ -d "mass_site/public-build" ]]; then
-  rsync_safe "${RSYNC_FLAGS[@]}" ${DRY:+--dry-run} \
+  rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
     mass_site/public-build/ \
     "${DEST}:/home/bitnami/htdocs/mass/"
 else

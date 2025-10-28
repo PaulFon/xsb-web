@@ -25,7 +25,7 @@ MSG="Quick deploy"
 # Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run|-n) DRY="-n"; RUN_GIT="no"; shift ;;
+    --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
     --git) RUN_GIT="yes"; shift ;;
     -m) shift; MSG="${1:-$MSG}"; shift || true ;;
     --) shift; break ;;
@@ -46,6 +46,28 @@ else
   echo "==> Skipping Git (dry run)"
 fi
 
+# ---- Rsync config -------------------------------------------------------------
+# For the very first pass from a new machine, you may uncomment --checksum below
+# to compare file contents (slower, but avoids timestamp/metadata churn).
+
+
+RSYNC_FLAGS=(
+  -avz
+  ${DRY:+--dry-run}
+  --delete
+  --delete-delay
+  --delete-excluded
+  --human-readable
+  --itemize-changes
+  --omit-dir-times
+  --no-perms
+  --no-group
+  --modify-window=2
+  # --checksum   # (optional one-time, if needed)
+)
+
+
+
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
@@ -55,15 +77,9 @@ RSYNC_EXCLUDES=(
   "--exclude=mass_site"
   "--exclude=mass"
   "--exclude=mass/"
+  "--exclude=.venv/"
 )
-
-RSYNC_FLAGS=(
-  -avz ${DRY}
-  --delete
-  -O
-  --itemize-changes
-  --human-readable
-)
+# ------------------------------------------------------------------------------
 
 echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
 rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \

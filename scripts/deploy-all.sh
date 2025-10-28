@@ -4,7 +4,7 @@ set -euo pipefail
 # Defaults
 MSG="Quick deploy (ALL)"
 
-# Pass-through CLI (we don’t reinterpret flags; we forward them verbatim)
+# Pass-through CLI (forward flags to both child scripts)
 ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
