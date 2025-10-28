@@ -1,26 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# --- SSH/Host config (alias with IP fallback) ---------------------------------
-HOST_ALIAS="xsb-lightsail"
-HOST_IP="35.174.112.225"
-HOST_USER="bitnami"
-SSH_KEY="${HOME}/.ssh/LightsailDefaultKey-us-east-1.pem"
-
-SSH_CMD=(ssh -i "$SSH_KEY" -o IdentitiesOnly=yes)
-DEST="${HOST_USER}@${HOST_ALIAS}"
-if ! "${SSH_CMD[@]}" -o BatchMode=yes -o ConnectTimeout=5 "${DEST}" true 2>/dev/null; then
-  DEST="${HOST_USER}@${HOST_IP}"
-fi
-RSYNC_SSH=(-e "ssh -i ${SSH_KEY} -o IdentitiesOnly=yes")
-rsync_safe() { rsync "${RSYNC_SSH[@]}" "$@"; }
-remote() { "${SSH_CMD[@]}" "${DEST}" "$@"; }
-# ------------------------------------------------------------------------------
+# ===============================
+# Deploy MASS site to Lightsail
+# Source: mass_site/public-build/
+# Dest:   /home/bitnami/htdocs/mass/
+# Flags:
+#   --dry-run | -n   (preview rsync only; skips Git)
+#   --git            (force Git even in dry run)
+#   -m "message"     (commit message)
+# ===============================
 
 # Defaults
 DRY=""
 RUN_GIT="yes"
-MSG="Quick deploy (MASS)"
+MSG="Quick MASS deploy"
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -37,57 +31,61 @@ if [[ -n "${DRY}" ]]; then
   echo "🔎 Dry run enabled (no rsync changes will be made)"
 fi
 
+# Optional Git step (skip when --dry-run unless --git provided)
 if [[ "${RUN_GIT}" == "yes" ]]; then
   echo "==> Git commit & push"
-  git add .
+  git add -A
   git commit -m "${MSG}" || echo "Nothing to commit"
-  git push origin main
+  git push origin "$(git rev-parse --abbrev-ref HEAD)"
 else
   echo "==> Skipping Git (dry run)"
 fi
 
-# ---- Rsync config -------------------------------------------------------------
-RSYNC_FLAGS=(
-  -avz
-  ${DRY:+--dry-run}
-  --delete
-  --delete-delay
-  --delete-excluded
-  --human-readable
-  --itemize-changes
-  --omit-dir-times
-  --no-perms
-  --no-group
-  --modify-window=2
-  # --checksum   # optional: one-time if rsync wants to recopy lots
-)
+# SSH host alias (set in ~/.ssh/config)
+REMOTE_ALIAS="xsb-lightsail"
 
+# Paths
+SRC="mass_site/public-build/"
+DEST="/home/bitnami/htdocs/mass/"
+
+# Safety: ensure source exists
+if [[ ! -d "${SRC}" ]]; then
+  echo "❌ Source folder not found: ${SRC}" >&2
+  exit 1
+fi
+
+# Excludes
 RSYNC_EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
   "--exclude=.git"
   "--exclude=.gitignore"
-  "--exclude=.venv/"
-  "--exclude=scripts"
-  "--exclude=wiki"
-  "--exclude=WEB"
-  "--exclude=web"
 )
-# ------------------------------------------------------------------------------
 
-# Ensure real target exists and is writable
-remote 'mkdir -p /home/bitnami/htdocs/wwwroot/mass; chown -R bitnami:bitnami /home/bitnami/htdocs/wwwroot/mass'
+# Hardened rsync flags
+RSYNC_FLAGS=(
+  -avz
+  --itemize-changes
+  --human-readable
+  --delete
+  --delete-delay
+  --delete-excluded
+  --omit-dir-times
+  --no-perms
+  --no-group
+  --modify-window=2
+  --chmod=F644,D755     # ensure Apache-readable perms on target
+)
 
-echo "==> Deploying MASS → /home/bitnami/htdocs/wwwroot/mass"
-if [[ -d "mass_site/public-build" ]]; then
-  rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
-    mass_site/public-build/ \
-    "${DEST}:/home/bitnami/htdocs/mass/"
-else
-  echo "❌ mass_site/public-build/ does not exist. Build first:"
-  echo "   python scripts/build-mass.py --date YYYY-MM-DD"
-  exit 2
+# Add dry-run if requested
+if [[ -n "${DRY}" ]]; then
+  RSYNC_FLAGS+=( "--dry-run" )
 fi
+
+echo "==> Deploying MASS → ${DEST}"
+rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
+  "${SRC}" \
+  "${REMOTE_ALIAS}:${DEST}"
 
 echo
 echo "✅ MASS deployment ${DRY:+(dry run) }complete."
