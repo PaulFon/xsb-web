@@ -60,6 +60,7 @@ RSYNC_FLAGS=(
   --no-perms
   --no-group
   --modify-window=2
+  -K
   # --checksum   # (optional one-time, if needed)
 )
 
