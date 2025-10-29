@@ -12,12 +12,11 @@ Examples:
     --date 2026-06-23 --label "Tuesday, Week 12 in Ordinary Time (Cycle I)" \
     --roles reading1,psalm,gospel --with-propers
 
-  # Sanctoral (no cycle), local readings only, no ordo date write
-  python -m builder.scaffold --day-key Sanctoral-03-19-Joseph --type sanctoral \
-    --roles reading1,psalm,gospel --set-id SET.Sanctoral-03-19-Joseph
+  # Canonical readings batch (file in canonicals/ or repo root)
+  python -m builder.scaffold --canonical-yaml joseph.yaml
 """
 from __future__ import annotations
-import argparse, sys, os
+import argparse, sys
 from pathlib import Path
 from typing import List, Optional, Dict
 import yaml
@@ -31,7 +30,7 @@ DEFAULT_FORM = "roman-missal-3e"
 def write_text(path: Path, content: str, overwrite: bool = False):
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists() and not overwrite:
-        return  # keep existing file
+        return
     path.write_text(content, encoding="utf-8")
 
 def yload(path: Path) -> dict:
@@ -63,7 +62,6 @@ def default_set_id(day_key: str, cycle: Optional[str]) -> str:
     return f"SET.{day_key}{suffix}"
 
 def default_labels(day_key: str, cycle: Optional[str], day_type: str) -> Dict[str, str]:
-    # Simple fallbacks you can override on the CLI
     set_label = f"{day_key.replace('-', ' ')}"
     if cycle:
         set_label += f" ({cycle})"
@@ -79,7 +77,7 @@ def scaffold_propers(day_key: str):
         "group": "temporal",
         "title": day_key.replace("-", " "),
         "rank": "Sunday" if day_key.endswith("Sun") else "Weekday",
-        "season": "Ordinary Time",  # adjust as needed
+        "season": "Ordinary Time",
         "color": ["green"],
         "variants": {
             "default": "day",
@@ -107,7 +105,6 @@ def scaffold_lectionary_roles(day_key: str, day_type: str, roles: List[str], cyc
     if cf:
         base = base / cf
 
-    # role folders + minimal segment.yaml + text.html
     for role in roles:
         seg_yaml = {
             "role": {
@@ -116,12 +113,10 @@ def scaffold_lectionary_roles(day_key: str, day_type: str, roles: List[str], cyc
                 "psalm": "Responsorial Psalm",
                 "gospel": "Gospel",
             }.get(role, role),
-            "reference": "",          # fill later
-            "versification": "NABRE", # or your base
+            "reference": "",
+            "versification": "NABRE",
             "canonical_id": None,
-            "paths": {
-                "text_html": "text.html",
-            }
+            "paths": {"text_html": "text.html"}
         }
         if role == "psalm":
             seg_yaml["paths"]["response_html"] = "response.html"
@@ -188,48 +183,96 @@ def update_ordo(conference: str, form: str, date_iso: str, day_key: str,
     doc["days"][date_iso] = node
     write_text(ordo_path, ydump(doc), overwrite=True)
 
+# ---------- canonical readings ----------
+
+def scaffold_canonical_reading(reading: dict):
+    """
+    reading:
+      id: READING.Mt-1-16_18-21_24a.NABRE
+      role: gospel | reading1 | reading2 | psalm
+      reference: "Matthew 1:16, 18-21, 24a"
+      versification: "NABRE"
+      text_html: "<p>...</p>"                 # optional (placeholder if missing)
+      response_html: "<p>...</p>"             # psalm only; optional
+    """
+    rid = reading["id"]
+    base = ROOT / f"segments/readings/{rid}"
+    seg = {
+        "id": rid,
+        "role": reading["role"],
+        "reference": reading.get("reference", ""),
+        "versification": reading.get("versification", "NABRE"),
+        "paths": {"text_html": "text.html"}
+    }
+    # psalm refrain support
+    if reading.get("response_html") is not None or reading.get("role") == "psalm":
+        seg["paths"]["response_html"] = "response.html"
+
+    ensure_file(base / "segment.yaml", seg)
+    write_text(base / "text.html", reading.get("text_html", f"<p>[{rid} text placeholder]</p>"))
+    if "response_html" in seg["paths"]:
+        write_text(base / "response.html", reading.get("response_html", "<p>[Response placeholder]</p>"))
+
+def scaffold_canon_from_yaml(path: Path):
+    # If relative path not found, try canonicals/<path>
+    if not path.is_absolute():
+        candidate = ROOT / path
+        if not candidate.exists():
+            candidate = ROOT / "canonicals" / path
+        path = candidate
+    if not path.exists():
+        raise SystemExit(f"Canonical YAML not found: {path}")
+    doc = yload(path)
+    items = doc.get("readings", [])
+    for r in items:
+        scaffold_canonical_reading(r)
+
 # ---------- CLI ----------
 
 def main(argv=None):
     p = argparse.ArgumentParser(description="Scaffold Missal + Lectionary segments and ordo entry.")
-    p.add_argument("--day-key", required=True, help="Key like OT-31-Sun, OT-12-Tue, Sanctoral-03-19-Joseph")
-    p.add_argument("--type", choices=["sunday","weekday","sanctoral"], required=True)
+    p.add_argument("--day-key", help="Key like OT-31-Sun, OT-12-Tue, Sanctoral-03-19-Joseph")
+    p.add_argument("--type", choices=["sunday","weekday","sanctoral"])
     p.add_argument("--cycle", help="A|B|C for Sundays, I|II for weekdays (omit for sanctoral)")
-    p.add_argument("--roles", help="Comma list of roles (default based on type). e.g., reading1,psalm,gospel")
-    p.add_argument("--set-id", help="Override reading set ID (default SET.<day_key>.<cycle>)")
+    p.add_argument("--roles", help="Comma list of roles (default based on type)")
+    p.add_argument("--set-id", help="Override reading set ID")
     p.add_argument("--set-label", help="Human label for the reading set")
     p.add_argument("--date", help="ISO date to map in the ordo (YYYY-MM-DD)")
     p.add_argument("--label", help="Ordo display label for that date")
     p.add_argument("--conference", default=DEFAULT_CONF)
     p.add_argument("--form", default=DEFAULT_FORM)
-    p.add_argument("--with-propers", action="store_true", help="Also scaffold minimal propers for the day_key")
+    p.add_argument("--with-propers", action="store_true", help="Also scaffold minimal propers")
     p.add_argument("--prefer", choices=["local","canonical"], default="local",
                    help="Default preference for reading set items")
+    p.add_argument("--canonical-yaml", help="YAML file listing canonical readings to scaffold (looked up in canonicals/ by default)")
     args = p.parse_args(argv)
 
+    # Canonical batch-only mode
+    if args.canonical_yaml and not args.day_key:
+        scaffold_canon_from_yaml(Path(args.canonical_yaml))
+        print("Canonical readings scaffold complete.")
+        return 0
+
+    # Normal day scaffold
     roles = (args.roles.split(",") if args.roles else ROLE_DEFAULTS[args.type])
     set_id = args.set_id or default_set_id(args.day_key, args.cycle)
     labels = default_labels(args.day_key, args.cycle, args.type)
     set_label = args.set_label or labels["set"]
 
-    # 1) Lectionary role folders
     scaffold_lectionary_roles(args.day_key, args.type, roles, args.cycle)
-
-    # 2) Options.yaml referencing the default set
     scaffold_options(args.day_key, args.type, args.cycle, set_id, set_label)
-
-    # 3) Reading set file
     scaffold_reading_set(set_id, set_label, roles, prefer=args.prefer)
 
-    # 4) Propers (optional)
     if args.with_propers:
         scaffold_propers(args.day_key)
 
-    # 5) Ordo entry (optional if date given)
     if args.date:
         ordo_label = args.label or labels["ordo"]
         update_ordo(args.conference, args.form, args.date, args.day_key,
                     args.type, args.cycle, set_id, ordo_label)
+
+    if args.canonical_yaml:
+        scaffold_canon_from_yaml(Path(args.canonical_yaml))
 
     print("Scaffold complete.")
     return 0

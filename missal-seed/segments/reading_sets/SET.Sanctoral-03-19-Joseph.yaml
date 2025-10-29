@@ -1,12 +1,14 @@
 id: "SET.Sanctoral-03-19-Joseph"
-label: "St. Joseph, Spouse of the BVM"
+label: "St. Joseph, Spouse of the Blessed Virgin Mary"
 items:
   - role: "reading1"
     prefer: "canonical"
     canonical_id: "READING.2Sam-7-4_5a_12-14a_16.NABRE"
+
   - role: "psalm"
     prefer: "canonical"
     canonical_id: "READING.Ps-89-2-3_4-5_27_29.NABRE"
+
   - role: "gospel"
     prefer: "canonical"
     canonical_id: "READING.Mt-1-16_18-21_24a.NABRE"

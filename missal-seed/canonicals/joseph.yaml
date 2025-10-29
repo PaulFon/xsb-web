@@ -1,0 +1,17 @@
+readings:
+  - id: "READING.2Sam-7-4_5a_12-14a_16.NABRE"
+    role: "reading1"
+    reference: "2 Samuel 7:4-5a, 12-14a, 16"
+    text_html: "<p>[Joseph alt — First Reading]</p>"
+
+  - id: "READING.Ps-89-2-3_4-5_27_29.NABRE"
+    role: "psalm"
+    reference: "Psalm 89:2-3, 4-5, 27, 29"
+    text_html: "<p>[Joseph alt — Psalm verses]</p>"
+    response_html: "<p>The son of David will live for ever.</p>"
+
+  - id: "READING.Mt-1-16_18-21_24a.NABRE"
+    role: "gospel"
+    reference: "Matthew 1:16, 18-21, 24a"
+    text_html: "<p>[Joseph alt — Gospel]</p>"
+  
