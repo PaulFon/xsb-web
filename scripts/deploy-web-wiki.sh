@@ -1,28 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# --- SSH/Host config (alias with IP fallback) ---------------------------------
-HOST_ALIAS="xsb-lightsail"
-HOST_IP="35.174.112.225"
-HOST_USER="bitnami"
-SSH_KEY="${HOME}/.ssh/LightsailDefaultKey-us-east-1.pem"
+# ===============================
+# Deploy WEB/WIKI to Lightsail
+# WEB src:  . (repo root)       → /home/bitnami/htdocs/wwwroot/
+# WIKI src: ./wiki/ (if exists)  → /home/bitnami/htdocs/wiki/
+# Flags:
+#   --dry-run | -n   (preview rsync only; skips Git)
+#   --git            (force Git even in dry run)
+#   -m "message"     (commit message)
+# ===============================
 
-SSH_CMD=(ssh -i "$SSH_KEY" -o IdentitiesOnly=yes)
-DEST="${HOST_USER}@${HOST_ALIAS}"
-if ! "${SSH_CMD[@]}" -o BatchMode=yes -o ConnectTimeout=5 "${DEST}" true 2>/dev/null; then
-  DEST="${HOST_USER}@${HOST_IP}"
-fi
-RSYNC_SSH=(-e "ssh -i ${SSH_KEY} -o IdentitiesOnly=yes")
-rsync_safe() { rsync "${RSYNC_SSH[@]}" "$@"; }
-remote() { "${SSH_CMD[@]}" "${DEST}" "$@"; }
-# ------------------------------------------------------------------------------
-
-# Defaults
 DRY=""
 RUN_GIT="yes"
-MSG="Quick deploy"
+MSG="Quick WEB/WIKI deploy"
 
-# Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
@@ -33,64 +25,79 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -n "$DRY" ]]; then
+if [[ -n "${DRY}" ]]; then
   echo "🔎 Dry run enabled (no rsync changes will be made)"
 fi
 
-if [[ "$RUN_GIT" == "yes" ]]; then
+if [[ "${RUN_GIT}" == "yes" ]]; then
   echo "==> Git commit & push"
-  git add .
-  git commit -m "$MSG" || echo "Nothing to commit"
-  git push origin main
+  git add -A
+  git commit -m "${MSG}" || echo "Nothing to commit"
+  git push origin "$(git rev-parse --abbrev-ref HEAD)"
 else
   echo "==> Skipping Git (dry run)"
 fi
 
-# ---- Rsync config -------------------------------------------------------------
-# If the first run from a new machine tries to recopy “everything”, optionally
-# uncomment --checksum for ONE real run, then re-comment for speed later.
-RSYNC_FLAGS=(
-  -avz
-  ${DRY:+--dry-run}
-  --delete
-  --delete-delay
-  --delete-excluded
-  --human-readable
-  --itemize-changes
-  --omit-dir-times
-  --no-perms
-  --no-group
-  --modify-window=2
-  # --checksum
-)
+REMOTE_ALIAS="xsb-lightsail"
 
-RSYNC_EXCLUDES=(
+# Shared excludes (don’t ship build tooling)
+EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
   "--exclude=.git"
   "--exclude=.gitignore"
-  "--exclude=.venv/"
+  "--exclude=.vscode"
   "--exclude=scripts"
   "--exclude=mass_site"
-  "--exclude=mass"
-  "--exclude=mass/"
+  "--exclude=README.md"
+  "--exclude=docs"
 )
-# ------------------------------------------------------------------------------
+
+RSYNC_FLAGS=(
+  -avz
+  --itemize-changes
+  --human-readable
+  --delete
+  --delete-delay
+  --delete-excluded
+  --omit-dir-times
+  --no-perms
+  --no-group
+  --modify-window=2
+)
+
+[[ -n "${DRY}" ]] && RSYNC_FLAGS+=( "--dry-run" )
 
 echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
-rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
+rsync "${RSYNC_FLAGS[@]}" "${EXCLUDES[@]}" \
   ./ \
-  "${DEST}:/home/bitnami/htdocs/wwwroot/"
+  "${REMOTE_ALIAS}:/home/bitnami/htdocs/wwwroot/"
 
-# Ensure wiki dir exists and is owned by bitnami (non-fatal if absent locally)
-remote 'mkdir -p /home/bitnami/htdocs/wiki; chown -R bitnami:bitnami /home/bitnami/htdocs/wiki'
+# (Optional) Normalize perms on server (skip for dry run)
+if [[ -z "${DRY}" ]]; then
+  echo "==> Normalizing permissions on server (WEB)"
+  ssh "${REMOTE_ALIAS}" '
+    find /home/bitnami/htdocs/wwwroot -type d -exec chmod 755 {} \; &&
+    find /home/bitnami/htdocs/wwwroot -type f -exec chmod 644 {} \;
+  ' || echo "⚠️  Perm normalization (WEB) failed (non-fatal)"
+fi
 
 if [[ -d "wiki" ]]; then
   echo
   echo "==> Deploying WIKI → /home/bitnami/htdocs/wiki"
-  rsync_safe "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
+  rsync "${RSYNC_FLAGS[@]}" \
+    --exclude=".DS_Store" --exclude="._*" \
+    --exclude=".git" --exclude=".gitignore" \
     ./wiki/ \
-    "${DEST}:/home/bitnami/htdocs/wiki/"
+    "${REMOTE_ALIAS}:/home/bitnami/htdocs/wiki/"
+
+  if [[ -z "${DRY}" ]]; then
+    echo "==> Normalizing permissions on server (WIKI)"
+    ssh "${REMOTE_ALIAS}" '
+      find /home/bitnami/htdocs/wiki -type d -exec chmod 755 {} \; &&
+      find /home/bitnami/htdocs/wiki -type f -exec chmod 644 {} \;
+    ' || echo "⚠️  Perm normalization (WIKI) failed (non-fatal)"
+  fi
 else
   echo
   echo "==> Skipping WIKI (no local wiki/ folder)"
