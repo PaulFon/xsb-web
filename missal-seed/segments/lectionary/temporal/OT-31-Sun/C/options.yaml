@@ -1,0 +1,8 @@
+id: LEC.OT-31-Sun.C
+day_key: OT-31-Sun
+cycle:
+  sunday: C
+  weekday: null
+sets:
+- id: SET.OT-31-Sun.C
+  label: OT 31 Sun (C)

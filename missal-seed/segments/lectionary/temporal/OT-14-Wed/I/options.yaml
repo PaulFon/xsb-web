@@ -1,0 +1,8 @@
+id: LEC.OT-14-Wed.I
+day_key: OT-14-Wed
+cycle:
+  sunday: null
+  weekday: I
+sets:
+- id: SET.OT-14-Wed.I
+  label: OT 14 Wed (I)

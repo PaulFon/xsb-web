@@ -25,3 +25,25 @@ days:
     - day_key: Sanctoral-03-19-Joseph
       type: optional-memorial
     precedence_rule: Weekday with optional memorial
+  '2026-11-01':
+    label: 31st Sunday in Ordinary Time (Cycle C)
+    primary:
+      day_key: OT-31-Sun
+      variant: day
+      cycle:
+        sunday: C
+        weekday: null
+      default_reading_set: SET.OT-31-Sun.C
+    overlays: []
+    precedence_rule: Sunday in OT
+  '2026-07-01':
+    label: Wednesday, Week 14 in Ordinary Time (Cycle I)
+    primary:
+      day_key: OT-14-Wed
+      variant: day
+      cycle:
+        sunday: null
+        weekday: I
+      default_reading_set: SET.OT-14-Wed.I
+    overlays: []
+    precedence_rule: Weekday

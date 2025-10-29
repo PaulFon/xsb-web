@@ -1,0 +1,17 @@
+id: OT-31-Sun
+group: temporal
+title: OT 31 Sun
+rank: Sunday
+season: Ordinary Time
+color:
+- green
+variants:
+  default: day
+  sets:
+    day:
+      label: Mass During the Day
+      pieces:
+        entrance_html: day/entrance.html
+        collect_html: day/collect.html
+        communion_html: day/communion.html
+        post_communion_html: day/post-communion.html
