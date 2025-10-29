@@ -1,0 +1,27 @@
+'2026-06-23':
+  label: Tuesday, Week 12 in Ordinary Time (Cycle I)
+  primary:
+    day_key: OT-12-Tue
+    variant: day
+    cycle:
+      sunday: null
+      weekday: I
+    default_reading_set: SET.OT-12-Tue.I
+  overlays:
+  - day_key: Sanctoral-03-19-Joseph
+    type: optional-memorial
+  precedence_rule: Weekday with optional memorial
+days:
+  '2026-06-23':
+    label: Tuesday, Week 12 in Ordinary Time (Cycle I)
+    primary:
+      day_key: OT-12-Tue
+      variant: day
+      cycle:
+        sunday: null
+        weekday: I
+      default_reading_set: SET.OT-12-Tue.I
+    overlays:
+    - day_key: Sanctoral-03-19-Joseph
+      type: optional-memorial
+    precedence_rule: Weekday with optional memorial

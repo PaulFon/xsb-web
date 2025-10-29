@@ -1,0 +1,8 @@
+id: "LEC.OT-12-Tue.I"
+day_key: "OT-12-Tue"
+cycle: { sunday: null, weekday: "I" }
+sets:
+  - id: "SET.OT-12-Tue.I"
+    label: "Week 12 OT Tuesday (Cycle I)"
+  - id: "SET.Sanctoral-03-19-Joseph"
+    label: "St. Joseph (alt)"

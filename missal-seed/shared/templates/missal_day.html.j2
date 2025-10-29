@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{ locale }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ liturgical_day.name }} — {{ date }}</title>
+  <link rel="stylesheet" href="../styles/large-print.css">
+</head>
+<body>
+  <header>
+    <h1>{{ liturgical_day.name }}</h1>
+    <p>
+      {{ liturgical_day.season }} • {{ liturgical_day.rank }}
+      • Colors: {{ liturgical_day.color | join(", ") }}
+      {% if cycles %}• {{ cycles }}{% endif %}
+    </p>
+    {% if calendar_label %}<p><em>{{ calendar_label }}</em></p>{% endif %}
+  </header>
+
+  <section aria-labelledby="propers">
+    <h2 id="propers">Propers</h2>
+    <article aria-labelledby="collect"><h3 id="collect">Collect</h3>{{ propers.collect_html | safe }}</article>
+    <article aria-labelledby="entrance"><h3 id="entrance">Entrance</h3>{{ propers.entrance_html | safe }}</article>
+    <article aria-labelledby="communion"><h3 id="communion">Communion</h3>{{ propers.communion_html | safe }}</article>
+    <article aria-labelledby="post-communion"><h3 id="post-communion">Post-Communion</h3>{{ propers.post_communion_html | safe }}</article>
+  </section>
+
+  <section aria-labelledby="readings">
+    <h2 id="readings">Lectionary Readings</h2>
+    {% for r in readings %}
+      <article>
+        <h3>{{ r.role | replace('_', ' ') | title }}{% if r.ref_meta.reference %} — {{ r.ref_meta.reference }}{% endif %}</h3>
+        {{ r.text_html | safe }}
+        {% if r.response_html %}<p><strong>R/</strong> {{ r.response_html | safe }}</p>{% endif %}
+      </article>
+    {% endfor %}
+  </section>
+</body>
+</html>

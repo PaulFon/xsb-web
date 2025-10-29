@@ -1,0 +1,4 @@
+html { font-size: 20px; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.6; margin: 1.25rem; }
+h1,h2,h3 { line-height: 1.25; }
+article { margin-block: 1rem; }

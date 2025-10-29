@@ -1,0 +1,9 @@
+id: "SET.OT-12-Tue.I"
+label: "Week 12 OT Tuesday (I)"
+items:
+  - role: "reading1"
+    prefer: "local"
+  - role: "psalm"
+    prefer: "local"
+  - role: "gospel"
+    prefer: "local"

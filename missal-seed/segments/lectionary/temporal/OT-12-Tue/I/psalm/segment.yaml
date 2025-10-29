@@ -1,0 +1,7 @@
+role: "Responsorial Psalm"
+reference: "Psalm 48:2-3ab, 3cd-4, 10-11"
+versification: "NABRE"
+canonical_id: null
+paths:
+  text_html: "text.html"
+  response_html: "response.html"

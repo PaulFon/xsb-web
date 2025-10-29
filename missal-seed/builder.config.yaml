@@ -1,0 +1,6 @@
+conference: "US"
+form: "roman-missal-3e"
+year: 2026
+locale: "en-US"
+templates_dir: "shared/templates"
+out_dir: "dist/html"
