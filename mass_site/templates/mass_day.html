@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mass {{ missal.date }}</title>
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:70ch;margin:2rem auto;padding:0 1rem;line-height:1.5}
+    header{margin-bottom:1.5rem}
+    h1{font-size:1.6rem;margin:0 0 .5rem}
+    dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .75rem}
+    dt{font-weight:600}
+    dd{margin:0}
+    footer{margin-top:2rem;color:#666;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mass for {{ missal.date }}</h1>
+    <div>UID: {{ missal.uid }}</div>
+  </header>
+
+  <section>
+    <h2>Propers (placeholder)</h2>
+    <dl>
+      <dt>Entrance Antiphon</dt><dd>(coming from content)</dd>
+      <dt>Collect</dt><dd>(coming from content)</dd>
+      <dt>Communion Antiphon</dt><dd>(coming from content)</dd>
+      <dt>Prayer after Communion</dt><dd>(coming from content)</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <p>Canonical URL: <code>{{ canonical_url }}</code></p>
+  </footer>
+</body>
+</html>

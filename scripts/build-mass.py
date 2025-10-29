@@ -1,91 +1,74 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
+"""
+Build one Mass page into mass_site/public-build/YYYY-MM-DD.html
 
-# ===============================
-# Deploy MASS site to Lightsail
-# - Source: mass_site/public-build/
-# - Dest:   /home/bitnami/htdocs/mass/
-# Supports:
-#   --dry-run | -n     (preview only; skips Git)
-#   --git              (force Git even in dry run)
-#   -m "message"       (commit message)
-# ===============================
+Usage:
+  python3 scripts/build-mass.py --date 2025-10-26
+"""
+import os
+import sys
+import argparse
+from pathlib import Path
 
-# Defaults
-DRY=""
-RUN_GIT="yes"
-MSG="Quick MASS deploy"
+import yaml
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-# Parse args
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
-    --git) RUN_GIT="yes"; shift ;;
-    -m) shift; MSG="${1:-$MSG}"; shift || true ;;
-    --) shift; break ;;
-    *) MSG="$1"; shift ;;
-  esac
-done
+# --- Paths
+BASE_DIR = Path(__file__).resolve().parents[1]
+TEMPLATE_DIR = BASE_DIR / "mass_site" / "templates"
+OUTPUT_DIR = BASE_DIR / "mass_site" / "public-build"
+CONTENT_DIR = BASE_DIR / "mass_site" / "content"
+DATE_INDEX = CONTENT_DIR / "shared" / "notes" / "date_index.yaml"
 
-if [[ -n "${DRY}" ]]; then
-  echo "🔎 Dry run enabled (no rsync changes will be made)"
-fi
-
-# Optional Git step (skip when --dry-run unless --git provided)
-if [[ "${RUN_GIT}" == "yes" ]]; then
-  echo "==> Git commit & push"
-  git add -A
-  git commit -m "${MSG}" || echo "Nothing to commit"
-  git push origin "$(git rev-parse --abbrev-ref HEAD)"
-else
-  echo "==> Skipping Git (dry run)"
-fi
-
-# Remote host alias (configured in ~/.ssh/config)
-REMOTE_ALIAS="xsb-lightsail"
-
-# Paths
-SRC="mass_site/public-build/"
-DEST="/home/bitnami/htdocs/mass/"
-
-# Safety: ensure source exists
-if [[ ! -d "${SRC}" ]]; then
-  echo "❌ Source folder not found: ${SRC}" >&2
-  exit 1
-fi
-
-# Excludes (we only deploy built files)
-RSYNC_EXCLUDES=(
-  "--exclude=.DS_Store"
-  "--exclude=._*"
-  "--exclude=.git"
-  "--exclude=.gitignore"
+# --- Jinja2 env
+env = Environment(
+    loader=FileSystemLoader(str(TEMPLATE_DIR)),
+    autoescape=select_autoescape(["html", "xml"]),
 )
 
-# Rsync flags (hardened)
-RSYNC_FLAGS=(
-  -avz
-  --itemize-changes
-  --human-readable
-  --delete
-  --delete-delay
-  --delete-excluded
-  --omit-dir-times
-  --no-perms
-  --no-group
-  --modify-window=2
-  --chmod=F644,D755     # ensure Apache-readable perms on target
-)
+def uid_from_date(date_str: str) -> str:
+    """Return UID for a date from date_index.yaml, or sensible fallback."""
+    if DATE_INDEX.exists():
+        with DATE_INDEX.open("r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        if isinstance(data, dict) and date_str in data:
+            return str(data[date_str])
+    # Fallback UID if not in index
+    return f"{date_str}-roman-sunday"
 
-# Add dry-run if requested
-if [[ -n "${DRY}" ]]; then
-  RSYNC_FLAGS+=( "--dry-run" )
-fi
+def render_day(date_str: str, uid: str) -> Path:
+    """
+    Render one day using templates/mass_day.html.
+    Minimal context for now; expand as we wire real content.
+    """
+    template = env.get_template("mass_day.html")
 
-echo "==> Deploying MASS → ${DEST}"
-rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
-  "${SRC}" \
-  "${REMOTE_ALIAS}:${DEST}"
+    # You can adjust canonical_url to match your preferred URL pattern.
+    # If your vhost DocumentRoot is /home/bitnami/htdocs/wwwroot and pages live under /mass/,
+    # this produces /mass/YYYY/MM/DD/ style. Today we emit flat YYYY-MM-DD.html, which works
+    # with both patterns.
+    context = {
+        "missal": {"date": date_str, "uid": uid},
+        "canonical_url": f"/mass/{date_str.replace('-', '/')}/",
+    }
 
-echo
-echo "✅ MASS deployment ${DRY:+(dry run) }complete."
+    html = template.render(**context)
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = OUTPUT_DIR / f"{date_str}.html"
+    out_path.write_text(html, encoding="utf-8")
+    print(f"Built {out_path}")
+    return out_path
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Build one Mass page.")
+    parser.add_argument("--date", required=True, help="YYYY-MM-DD")
+    args = parser.parse_args()
+
+    date_str = args.date.strip()
+    uid = uid_from_date(date_str)
+    render_day(date_str, uid)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
