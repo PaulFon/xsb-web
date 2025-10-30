@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    // Git: only show changes under this folder
+    "git.workingDirectory": "${workspaceFolder}",
+    // Python: use parent repo venv
+    "python.defaultInterpreterPath": "/Users/paul/Projects/xsb-web/.venv/bin/python",
+    // Auto-activate interpreter in VS Code terminal
+    "python.terminal.activateEnvironment": true,
+    // Window behavior
+    "window.restoreWindows": "all",
+    "window.restoreFullscreen": true,
+    // Editor basics
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "on",
+    // YAML settings
+    "[yaml]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    // Python formatting
+    "[python]": {
+      "editor.tabSize": 4,
+      "editor.insertSpaces": true
+    }
+  }
+}
