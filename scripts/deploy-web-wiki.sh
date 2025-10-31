@@ -3,23 +3,23 @@ set -euo pipefail
 
 # ===============================
 # Deploy WEB/WIKI to Lightsail
-# WEB src:  . (repo root)       → /home/bitnami/htdocs/wwwroot/
-# WIKI src: ./wiki/ (if exists)  → /home/bitnami/htdocs/wiki/
+#
+# WEB  src:  repo root (.)          → /home/bitnami/htdocs/wwwroot/
+# WIKI src:  ./wiki/ (if present)   → /home/bitnami/htdocs/wiki/
 #
 # Flags:
-#   --dry-run | -n       (preview rsync only; skips Git)
-#   --git                (force Git even in dry run)
-#   -m "message"         (commit message)
+#   --dry-run | -n    Preview rsync only; skip Git & remote chmod/chown
+#   --git             Force Git even in dry run
+#   -m "message"      Commit message for Git
 #
 # SSH:
-#   Prefers Host alias "xsb-lightsail" if present in ~/.ssh/config.
-#   Else falls back to bitnami@35.174.112.225 with key:
-#     ~/.ssh/LightsailDefaultKey-us-east-1.pem
+#   Uses SSH Host alias: xsb-lightsail (set in ~/.ssh/config)
 # ===============================
 
 DRY=""
 RUN_GIT="yes"
 MSG="Quick WEB/WIKI deploy"
+REMOTE_ALIAS="xsb-lightsail"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -32,9 +32,16 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -n "${DRY}" ]]; then
-  echo "🔎 Dry run enabled (no rsync changes will be made)"
+  echo "🔎 Dry run enabled (no rsync changes will be made; skipping remote chmod/chown)"
 fi
 
+# --- Sanity: ensure we're at repo root (has scripts/ & index.html)
+if [[ ! -d "scripts" || ! -f "index.html" ]]; then
+  echo "❌ Please run from the repo root (where scripts/ and index.html live)."
+  exit 1
+fi
+
+# --- Optional Git step
 if [[ "${RUN_GIT}" == "yes" ]]; then
   echo "==> Git commit & push"
   git add -A
@@ -44,35 +51,29 @@ else
   echo "==> Skipping Git (dry run)"
 fi
 
-# ---- SSH destination & rsync transport ----
-HOST_ALIAS="xsb-lightsail"
-FALLBACK_HOST="bitnami@35.174.112.225"
-KEYFILE="${HOME}/.ssh/LightsailDefaultKey-us-east-1.pem"
-
-SSH_DEST=""
-declare -a RSYNC_SSH
-
-if grep -qE "^[[:space:]]*Host[[:space:]]+${HOST_ALIAS}(\$|[[:space:]])" "${HOME}/.ssh/config" 2>/dev/null; then
-  SSH_DEST="${HOST_ALIAS}"
-  RSYNC_SSH=( -e "ssh" )
-  echo "==> Using SSH alias: ${HOST_ALIAS}"
-else
-  SSH_DEST="${FALLBACK_HOST}"
-  RSYNC_SSH=( -e "ssh -i ${KEYFILE}" )
-  echo "==> Using fallback SSH target: ${FALLBACK_HOST}"
+# --- Check SSH alias works
+echo "==> Using SSH alias: ${REMOTE_ALIAS}"
+if ! ssh -o BatchMode=yes -o ConnectTimeout=8 "${REMOTE_ALIAS}" 'echo ok' >/dev/null 2>&1; then
+  echo "❌ SSH to '${REMOTE_ALIAS}' failed. Check your ~/.ssh/config Host entry."
+  exit 1
 fi
 
-# ---- Shared rsync config ----
+# Shared excludes (don’t ship local tooling)
 EXCLUDES=(
   "--exclude=.DS_Store"
   "--exclude=._*"
   "--exclude=.git"
   "--exclude=.gitignore"
   "--exclude=.vscode"
+  "--exclude=.venv"
   "--exclude=scripts"
-  "--exclude=mass_site"
-  "--exclude=README.md"
   "--exclude=docs"
+  "--exclude=README.md"
+  "--exclude=readme.html"
+  "--exclude=php_errorlog"
+  # Keep app sources out of /wwwroot; they deploy elsewhere
+  "--exclude=mass_site"
+  "--exclude=missal-seed"
 )
 
 RSYNC_FLAGS=(
@@ -90,46 +91,44 @@ RSYNC_FLAGS=(
 
 [[ -n "${DRY}" ]] && RSYNC_FLAGS+=( "--dry-run" )
 
-# ===============================
-# Deploy WEB (repo root → wwwroot)
-# ===============================
-echo
+# --- Deploy WEB ---
 echo "==> Deploying WEB → /home/bitnami/htdocs/wwwroot"
 rsync "${RSYNC_FLAGS[@]}" "${EXCLUDES[@]}" \
-  "${RSYNC_SSH[@]}" \
   ./ \
-  "${SSH_DEST}:/home/bitnami/htdocs/wwwroot/"
+  "${REMOTE_ALIAS}:/home/bitnami/htdocs/wwwroot/"
 
-# Normalize ownership & perms (Bitnami-friendly) unless dry run
+# Normalize perms/ownership (skip in dry run)
 if [[ -z "${DRY}" ]]; then
   echo "==> Normalizing ownership & permissions on server (WEB)"
-  ssh ${RSYNC_SSH[1]:-ssh} ${SSH_DEST} '
+  ssh "${REMOTE_ALIAS}" '
+    set -e
     sudo chown -R bitnami:daemon /home/bitnami/htdocs/wwwroot &&
-    find /home/bitnami/htdocs/wwwroot -type d -exec chmod 775 {} \; &&
-    find /home/bitnami/htdocs/wwwroot -type f -exec chmod 664 {} \;
-  ' || echo "⚠️  Perm normalization (WEB) failed (non-fatal)"
+    # setgid bit so new files inherit group=daemon
+    sudo find /home/bitnami/htdocs/wwwroot -type d -exec chmod 2755 {} \; &&
+    sudo find /home/bitnami/htdocs/wwwroot -type f -exec chmod 0644 {} \; &&
+    sudo chmod g+s /home/bitnami/htdocs/wwwroot
+  ' || echo "⚠️  Ownership/perm normalization (WEB) failed (non-fatal)"
 fi
 
-# ===============================
-# Deploy WIKI (if ./wiki exists)
-# ===============================
+# --- Deploy WIKI (if present) ---
 if [[ -d "wiki" ]]; then
   echo
   echo "==> Deploying WIKI → /home/bitnami/htdocs/wiki"
   rsync "${RSYNC_FLAGS[@]}" \
     --exclude=".DS_Store" --exclude="._*" \
     --exclude=".git" --exclude=".gitignore" \
-    "${RSYNC_SSH[@]}" \
     ./wiki/ \
-    "${SSH_DEST}:/home/bitnami/htdocs/wiki/"
+    "${REMOTE_ALIAS}:/home/bitnami/htdocs/wiki/"
 
   if [[ -z "${DRY}" ]]; then
     echo "==> Normalizing ownership & permissions on server (WIKI)"
-    ssh ${RSYNC_SSH[1]:-ssh} ${SSH_DEST} '
+    ssh "${REMOTE_ALIAS}" '
+      set -e
       sudo chown -R bitnami:daemon /home/bitnami/htdocs/wiki &&
-      find /home/bitnami/htdocs/wiki -type d -exec chmod 775 {} \; &&
-      find /home/bitnami/htdocs/wiki -type f -exec chmod 664 {} \;
-    ' || echo "⚠️  Perm normalization (WIKI) failed (non-fatal)"
+      sudo find /home/bitnami/htdocs/wiki -type d -exec chmod 2755 {} \; &&
+      sudo find /home/bitnami/htdocs/wiki -type f -exec chmod 0644 {} \; &&
+      sudo chmod g+s /home/bitnami/htdocs/wiki
+    ' || echo "⚠️  Ownership/perm normalization (WIKI) failed (non-fatal)"
   fi
 else
   echo
