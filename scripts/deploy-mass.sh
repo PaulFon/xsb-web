@@ -1,92 +1,114 @@
 #!/usr/bin/env bash
+# deploy-mass.sh — Deploy the Mass site
+# - Calls sync-hub.sh to copy mass/index.html → mass_site/public-build/index.html
+# - Rebuilds manifest (assets/manifest.json) so "Latest" button is current
+# - Rsyncs public-build → Lightsail:/home/bitnami/htdocs/mass/
+# Usage:
+#   ./scripts/deploy-mass.sh -m "Commit message"
+#   ./scripts/deploy-mass.sh -n            # dry run
+#   ./scripts/deploy-mass.sh -n -m "Msg"
+
 set -euo pipefail
 
-# ===============================
-# Deploy MASS site to Lightsail
-# Source: mass_site/public-build/
-# Dest:   /home/bitnami/htdocs/mass/
-# Flags:
-#   --dry-run | -n   (preview rsync only; skips Git)
-#   --git            (force Git even in dry run)
-#   -m "message"     (commit message)
-# ===============================
+# --- Config ---
+SSH_ALIAS="xsb-lightsail"
+REMOTE_DIR="/home/bitnami/htdocs/mass/"
+BUILD_DIR="mass_site/public-build"
 
-DRY=""
-RUN_GIT="yes"
-MSG="Quick MASS deploy"
+# --- Flags ---
+DRY_RUN=0
+COMMIT_MSG=""
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --dry-run|-n) DRY="--dry-run"; RUN_GIT="no"; shift ;;
-    --git) RUN_GIT="yes"; shift ;;
-    -m) shift; MSG="${1:-$MSG}"; shift || true ;;
-    --) shift; break ;;
-    *) MSG="$1"; shift ;;
+while getopts ":nm:" opt; do
+  case "$opt" in
+    n) DRY_RUN=1 ;;
+    m) COMMIT_MSG="$OPTARG" ;;
+    \?) echo "Unknown option: -$OPTARG" >&2; exit 2 ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2; exit 2 ;;
   esac
 done
+shift $((OPTIND -1))
 
-if [[ -n "${DRY}" ]]; then
-  echo "🔎 Dry run enabled (no rsync changes will be made)"
+# --- Helpers ---
+say() { printf "%b\n" "$1"; }
+die() { say "❌ $1"; exit 1; }
+
+require() {
+  command -v "$1" >/dev/null 2>&1 || die "Missing required command: $1"
+}
+
+# --- Preconditions ---
+require rsync
+require ssh
+require git
+
+[ -d "$BUILD_DIR" ] || die "Build directory not found: $BUILD_DIR (did you clone the repo?)"
+
+if ! ssh -o BatchMode=yes -o ConnectTimeout=5 "$SSH_ALIAS" "echo ok" >/dev/null 2>&1; then
+  die "Cannot reach SSH alias '$SSH_ALIAS'. Check ~/.ssh/config or your key."
 fi
 
-if [[ "${RUN_GIT}" == "yes" ]]; then
-  echo "==> Git commit & push"
+# --- Git commit/push (optional) ---
+if [ "$DRY_RUN" -eq 0 ] && [ -n "$COMMIT_MSG" ]; then
+  say "==> Git commit & push"
+  # Stash untracked/changed files to avoid partial commits (optional safety)
   git add -A
-  git commit -m "${MSG}" || echo "Nothing to commit"
-  git push origin "$(git rev-parse --abbrev-ref HEAD)"
+  if ! git diff --cached --quiet; then
+    git commit -m "$COMMIT_MSG" || true
+  fi
+  git push || true
 else
-  echo "==> Skipping Git (dry run)"
+  say "==> Skipping Git (dry run or no -m message)"
 fi
 
-REMOTE_ALIAS="xsb-lightsail"
-SRC="mass_site/public-build/"
-DEST="/home/bitnami/htdocs/mass/"
-
-if [[ ! -d "${SRC}" ]]; then
-  echo "❌ Source folder not found: ${SRC}" >&2
-  exit 1
+# --- Ensure hub is in the build root ---
+say "==> Sync hub index into build root"
+if [ "$DRY_RUN" -eq 1 ]; then
+  say "🔎 Dry run: would run ./scripts/sync-hub.sh"
+else
+  ./scripts/sync-hub.sh
 fi
 
-RSYNC_EXCLUDES=(
-  "--exclude=.DS_Store"
-  "--exclude=._*"
-  "--exclude=.git"
-  "--exclude=.gitignore"
-)
+# --- Rebuild manifest so 'Latest' button is current ---
+say "==> Build manifest (latest link)"
+if [ "$DRY_RUN" -eq 1 ]; then
+  say "🔎 Dry run: would run ./scripts/build-mass-manifest.sh"
+else
+  ./scripts/build-mass-manifest.sh
+fi
 
-RSYNC_FLAGS=(
-  -avz
-  --itemize-changes
-  --human-readable
+# --- Rsync deploy ---
+say "==> Deploying MASS → $REMOTE_DIR"
+RSYNC_OPTS=(
+  -az
   --delete
-  --delete-delay
-  --delete-excluded
-  --omit-dir-times
-  --no-perms
-  --no-group
-  --modify-window=2
-  # (no --chmod here; macOS rsync 2.6.9 doesn't support it)
+  --checksum
+  --human-readable
+  --stats
+  # Excludes (belt & suspenders; BUILD_DIR shouldn't contain these anyway)
+  "--exclude=.git/"
+  "--exclude=.github/"
+  "--exclude=.DS_Store"
+  "--exclude=.venv/"
+  "--exclude=node_modules/"
 )
 
-if [[ -n "${DRY}" ]]; then
-  RSYNC_FLAGS+=( "--dry-run" )
+if [ "$DRY_RUN" -eq 1 ]; then
+  RSYNC_OPTS+=( -n )
+  say "🔎 Dry run enabled (no changes will be made)"
 fi
 
-echo "==> Deploying MASS → ${DEST}"
-rsync "${RSYNC_FLAGS[@]}" "${RSYNC_EXCLUDES[@]}" \
-  "${SRC}" \
-  "${REMOTE_ALIAS}:${DEST}"
+# Trailing slash on source means "contents of BUILD_DIR"
+rsync "${RSYNC_OPTS[@]}" "$BUILD_DIR/" "$SSH_ALIAS:$REMOTE_DIR"
 
-# Post-deploy permission fix (server-side), only on real deploys
-if [[ -z "${DRY}" ]]; then
-  echo "==> Normalizing permissions on server"
-  ssh "${REMOTE_ALIAS}" '
-    find /home/bitnami/htdocs/mass -type d -exec chmod 755 {} \; &&
-    find /home/bitnami/htdocs/mass -type f -exec chmod 644 {} \;
-  ' || {
-    echo "⚠️  Permission normalization failed (non-fatal)."
-  }
+# --- Permissions ---
+if [ "$DRY_RUN" -eq 1 ]; then
+  say "==> Skipping remote chmod/chown (dry run)"
+else
+  say "==> Normalizing permissions on server"
+  ssh "$SSH_ALIAS" "find '$REMOTE_DIR' -type d -exec chmod 755 {} \; &&
+                    find '$REMOTE_DIR' -type f -exec chmod 644 {} \; &&
+                    chown -R bitnami:daemon '$REMOTE_DIR' || true"
 fi
 
-echo
-echo "✅ MASS deployment ${DRY:+(dry run) }complete."
+say "✅ MASS deployment complete."
