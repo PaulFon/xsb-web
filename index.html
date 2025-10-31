@@ -1,28 +1,21 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
+<!DOCTYPE html><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CanonicalEye.org</title>
 <style>
-  :root { --fg:#222; --muted:#666; --bg:#fff; --ac:#0a6; }
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
-  .wrap{max-width:720px;margin:10vh auto;padding:0 1rem}
-  h1{font-size:2rem;margin:.2rem 0}
-  p.lead{color:var(--muted);margin:.2rem 0 1rem}
-  ul.links{list-style:none;padding:0;margin:1.25rem 0;display:grid;gap:.75rem}
-  a{display:inline-block;text-decoration:none;border:1px solid #ddd;border-radius:10px;padding:.75rem 1rem}
-  a:hover{border-color:var(--ac)}
-  small{color:var(--muted)}
+  :root { --bg:#0b0b0c; --fg:#f5f7fa; --muted:#c9d1d9; --card:#16181d; --link:#9cd1ff; --btn:#1f6feb; --btnTxt:#fff; }
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:17px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";}
+  .wrap{max-width:720px;margin:10vh auto;padding:28px}
+  h1{font-size:32px;margin:0 0 10px}
+  p{color:var(--muted);margin:0 0 16px}
+  .links a{display:inline-block;margin:6px 8px 0 0;padding:10px 14px;border-radius:12px;background:var(--card);color:var(--fg);text-decoration:none;border:1px solid #2a2f3a}
+  .links a.primary{background:var(--btn);color:var(--btnTxt);border:0;font-weight:600}
 </style>
-<div class="wrap">
+<main class="wrap">
   <h1>CanonicalEye.org</h1>
-  <p class="lead">Clean static landing page — WordPress removed.</p>
-
-  <ul class="links">
-    <li><a href="https://wiki.canonicaleye.org/"><strong>Wiki</strong><br><small>Internal docs & knowledge</small></a></li>
-    <li><a href="https://mass.xsb.pub/"><strong>Mass site</strong><br><small>Static/gated content (requires sign-in)</small></a></li>
-    <li><a href="https://mass.xsb.pub/"><strong>New Missal App</strong><br><small>Gated preview of the new app</small></a></li>
-  </ul>
-
-  <p><small>&copy; <span id="y"></span> Canonical Eye</small></p>
-</div>
-<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+  <p>Clean static page — WordPress removed.</p>
+  <div class="links">
+    <a class="primary" href="https://mass.xsb.pub/">Missal + Lectionary (private)</a>
+    <a href="https://wiki.canonicaleye.org/">Wiki</a>
+    <a href="https://canonicaleye.org/">Home</a>
+  </div>
+</main>
