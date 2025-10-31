@@ -1,5 +1,28 @@
-<!DOCTYPE html><meta charset="utf-8">
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CanonicalEye.org</title>
-<h1>CanonicalEye.org</h1>
-<p>Clean static page — WordPress removed.</p>
-<p><a href="https://wiki.canonicaleye.org/">Wiki</a> • <a href="https://mass.xsb.pub/">Mass site</a></p>
+<style>
+  :root { --fg:#222; --muted:#666; --bg:#fff; --ac:#0a6; }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
+  .wrap{max-width:720px;margin:10vh auto;padding:0 1rem}
+  h1{font-size:2rem;margin:.2rem 0}
+  p.lead{color:var(--muted);margin:.2rem 0 1rem}
+  ul.links{list-style:none;padding:0;margin:1.25rem 0;display:grid;gap:.75rem}
+  a{display:inline-block;text-decoration:none;border:1px solid #ddd;border-radius:10px;padding:.75rem 1rem}
+  a:hover{border-color:var(--ac)}
+  small{color:var(--muted)}
+</style>
+<div class="wrap">
+  <h1>CanonicalEye.org</h1>
+  <p class="lead">Clean static landing page — WordPress removed.</p>
+
+  <ul class="links">
+    <li><a href="https://wiki.canonicaleye.org/"><strong>Wiki</strong><br><small>Internal docs & knowledge</small></a></li>
+    <li><a href="https://mass.xsb.pub/"><strong>Mass site</strong><br><small>Static/gated content (requires sign-in)</small></a></li>
+    <li><a href="https://mass.xsb.pub/"><strong>New Missal App</strong><br><small>Gated preview of the new app</small></a></li>
+  </ul>
+
+  <p><small>&copy; <span id="y"></span> Canonical Eye</small></p>
+</div>
+<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
