@@ -21,7 +21,8 @@
 </header>
 <main class="wrap">
   <div class="grid">
-    <a class="btn" href="/en-US/">Latest</a>
+    <!-- Prefilled with current latest; script below will keep it fresh -->
+    <a class="btn" id="btn-latest" href="/en-US/general/2025/10/20/">Latest</a>
     <a class="btn alt" href="/en-US/general/2025/">Browse by Date</a>
     <a class="btn alt" href="/en-US/general/">All Generated Pages</a>
     <a class="btn alt" href="/assets/">Assets</a>
@@ -30,3 +31,16 @@
   </div>
   <div class="footer">Need access? Contact the site admin.</div>
 </main>
+<script>
+(async () => {
+  try {
+    const res = await fetch('/assets/manifest.json', {cache:'no-store'});
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.latest_url) {
+      const a = document.getElementById('btn-latest');
+      if (a) a.href = data.latest_url;
+    }
+  } catch (_) {}
+})();
+</script>
