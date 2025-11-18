@@ -12,7 +12,8 @@ set -euo pipefail
 
 # --- Config ---
 SSH_ALIAS="xsb-lightsail"
-REMOTE_DIR="/home/bitnami/htdocs/mass/"
+# REMOTE_DIR="/home/bitnami/htdocs/mass/"
+REMOTE_DIR="/opt/bitnami/apache/htdocs/mass/"
 BUILD_DIR="mass_site/public-build"
 
 # --- Flags ---
@@ -103,12 +104,12 @@ rsync "${RSYNC_OPTS[@]}" "$BUILD_DIR/" "$SSH_ALIAS:$REMOTE_DIR"
 
 # --- Permissions ---
 if [ "$DRY_RUN" -eq 1 ]; then
-  say "==> Skipping remote chmod/chown (dry run)"
+  say "==> Skipping remote chmod (dry run)"
 else
   say "==> Normalizing permissions on server"
   ssh "$SSH_ALIAS" "find '$REMOTE_DIR' -type d -exec chmod 755 {} \; &&
-                    find '$REMOTE_DIR' -type f -exec chmod 644 {} \; &&
-                    chown -R bitnami:daemon '$REMOTE_DIR' || true"
+                    find '$REMOTE_DIR' -type f -exec chmod 644 {} \;"
 fi
+
 
 say "✅ MASS deployment complete."
