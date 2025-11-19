@@ -31,3 +31,4 @@ __pycache__/
 *.log
 .vscode/
 mass_site/public-build/
+wiki/LocalSettings.php
