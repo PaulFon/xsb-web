@@ -1,0 +1,8 @@
+- id: "collects:advent:2_sunday"
+  title: "Second Sunday of Advent (Collect)"
+  metadata:
+    kind: "prayer"
+    speaker: "presider"
+  formats:
+    html: "<p>[Collect text placeholder]</p>"
+    plain: "[Collect text placeholder]"

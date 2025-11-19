@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ pkg.meta.title or "Mass" }}</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 2rem auto;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    header {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin: 0;
+    }
+    .meta-line {
+      color: #555;
+      font-size: 0.95rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.25rem;
+      font-size: 1.2rem;
+    }
+    h3 {
+      margin-top: 1.25rem;
+      font-size: 1.05rem;
+    }
+    .reading-citation {
+      font-style: italic;
+      color: #555;
+      margin-bottom: 0.25rem;
+    }
+    .reading-block {
+      margin-bottom: 1rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>{{ pkg.meta.title or "Mass" }}</h1>
+  <div class="meta-line">
+    {% if pkg.context.date %}
+      {{ pkg.context.date }} ·
+    {% endif %}
+    {% if pkg.meta.season %}
+      {{ pkg.meta.season|capitalize }}
+    {% endif %}
+    {% if pkg.meta.color %}
+      · Color: {{ pkg.meta.color|join(", ") }}
+    {% endif %}
+  </div>
+</header>
+
+<main>
+
+  {# --- Collect --------------------------------------------------------- #}
+  {% if pkg.liturgy.collect %}
+  <section class="section" id="collect">
+    <h2>Collect</h2>
+    <div>
+      {{ pkg.liturgy.collect.text | safe }}
+    </div>
+  </section>
+  {% endif %}
+
+  {# --- Readings -------------------------------------------------------- #}
+  {% if pkg.liturgy.readings and pkg.liturgy.readings.items %}
+  <section class="section" id="readings">
+    <h2>Liturgy of the Word</h2>
+
+    {% for reading in pkg.liturgy.readings.items %}
+      <div class="reading-block">
+        <h3>
+          {% if reading.role == "first" %}First Reading
+          {% elif reading.role == "second" %}Second Reading
+          {% elif reading.role == "psalm" %}Responsorial Psalm
+          {% elif reading.role == "gospel" %}Gospel
+          {% else %}{{ reading.role|capitalize }}
+          {% endif %}
+        </h3>
+
+        {% if reading.citation %}
+          <div class="reading-citation">{{ reading.citation }}</div>
+        {% endif %}
+
+        <div class="reading-text">
+          {{ reading.text | safe }}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+</main>
+
+</body>
+</html>
