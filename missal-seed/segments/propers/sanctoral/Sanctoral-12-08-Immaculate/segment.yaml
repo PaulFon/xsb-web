@@ -1,0 +1,16 @@
+id: "Sanctoral-12-08-Immaculate"
+group: "sanctoral"
+title: "Immaculate Conception of the Blessed Virgin Mary"
+rank: "Solemnity"
+season: "Sanctoral"
+color: ["white"]
+variants:
+  default: "day"
+  sets:
+    day:
+      label: "Mass During the Day"
+      pieces:
+        entrance_html: "day/entrance.html"
+        collect_html: "day/collect.html"
+        communion_html: "day/communion.html"
+        post_communion_html: "day/post-communion.html"

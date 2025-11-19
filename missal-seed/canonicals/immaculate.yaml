@@ -1,0 +1,40 @@
+meta:
+  id: "US:roman-missal-3e:common:2026"
+  calendar: "US"
+  form: "roman-missal-3e"
+  locale: "en-US"
+  defaults:
+    sunday_cycle: "C"
+    weekday_cycle: "II"
+  source:
+    name: "Common baseline (demo for 2026)"
+    license: "internal"
+
+days:
+  # Weekday test we scaffolded earlier
+  "2026-06-23":
+    label: "Tuesday, Week 12 in Ordinary Time"
+    primary:
+      day_key: "OT-12-Tue"
+      variant: "day"
+      cycle:
+        sunday: null
+        weekday: I
+      default_reading_set: "SET.OT-12-Tue.I"
+    overlays:
+      - set_id: "SET.Sanctoral-03-19-Joseph"
+        label: "St. Joseph, Spouse of the Blessed Virgin Mary"
+    precedence_rule: "ferial"
+
+  # Immaculate Conception
+  "2026-12-08":
+    label: "Immaculate Conception of the Blessed Virgin Mary"
+    primary:
+      day_key: "Sanctoral-12-08-Immaculate"
+      variant: "day"
+      cycle:
+        sunday: null
+        weekday: null
+      default_reading_set: "SET.Sanctoral-12-08-Immaculate"
+    overlays: []
+    precedence_rule: "Solemnity"
