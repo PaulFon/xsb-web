@@ -1,64 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ locale | default('en') }}">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:epub="http://www.idpf.org/2007/ops"
+  xml:lang="{{ locale | default('en') }}"
+  lang="{{ locale | default('en') }}"
+>
   <head>
     <title>{{ mass.title }}</title>
     <meta charset="utf-8" />
   </head>
-  <body>
-    <article id="{{ metadata.id }}">
-      <h1>{{ mass.title }}</h1>
+  <body epub:type="bodymatter" role="document">
+    <main epub:type="religion liturgy" role="main">
+      <article id="{{ metadata.id }}" epub:type="article">
+        <header epub:type="frontmatter">
+          <h1 epub:type="title">{{ mass.title }}</h1>
 
-      {# Collect #}
-      {% if collect %}
-      <section id="{{ collect.segment_id }}">
-        <h2>{{ collect.display_label or 'Collect' }}</h2>
-        <p>{{ collect.text }}</p>
-      </section>
-      {% endif %}
+          {# Basic metadata (optional display, useful for braille/LP) #}
+          <p class="feast" epub:type="subtitle">
+            {{ metadata.feast }}
+          </p>
+          <p class="liturgical-meta">
+            Season: {{ metadata.season }},
+            Week: {{ metadata.week }},
+            Year: {{ metadata.liturgical_year }},
+            Color: {{ metadata.color }}
+          </p>
+        </header>
 
-      {# Communion Antiphon #}
-      {% if communion_antiphon %}
-      <section id="{{ communion_antiphon.segment_id }}">
-        <h2>{{ communion_antiphon.display_label or 'Communion Antiphon' }}</h2>
-        {% if communion_antiphon.citation %}
-        <p class="citation">{{ communion_antiphon.citation }}</p>
+        {# Collect #}
+        {% if collect %}
+        <section id="{{ collect.segment_id }}" epub:type="prayer">
+          <h2 epub:type="title">{{ collect.display_label or 'Collect' }}</h2>
+          <p>{{ collect.text }}</p>
+        </section>
         {% endif %}
-        <p>{{ communion_antiphon.text }}</p>
-      </section>
-      {% endif %}
 
-      {# Readings #}
-      {% if readings %}
-      <section id="readings">
-        <h2>Readings</h2>
-        {% for r in readings %}
-          <section id="{{ r.segment_id }}" class="reading reading-{{ r.type }}">
-            <h3>
-              {{ r.type|replace('_',' ')|title }}
-              {% if r.citation %}<span class="citation"> — {{ r.citation }}</span>{% endif %}
-            </h3>
+        {# Communion Antiphon #}
+        {% if communion_antiphon %}
+        <section id="{{ communion_antiphon.segment_id }}" epub:type="prayer">
+          <h2 epub:type="title">{{ communion_antiphon.display_label or 'Communion Antiphon' }}</h2>
+          {% if communion_antiphon.citation %}
+          <p class="citation" epub:type="z3998:roman">{{ communion_antiphon.citation }}</p>
+          {% endif %}
+          <p>{{ communion_antiphon.text }}</p>
+        </section>
+        {% endif %}
 
-            {% if r.type == 'responsorial_psalm' %}
-              <p class="psalm-response">
-                <span class="label">R.</span> {{ r.response }}
-              </p>
-              <ol class="psalm-verses">
-                {% for v in r.verses %}
-                  <li>{{ v }}</li>
-                {% endfor %}
-              </ol>
+        {# Readings #}
+        {% if readings %}
+        <section id="readings" epub:type="section">
+          <h2 epub:type="title">Readings</h2>
+
+          {% for r in readings %}
+            {# Map reading type to epub:type values #}
+            {% set epub_type = 'reading' %}
+            {% if r.type == 'gospel' %}
+              {% set epub_type = 'reading scripture gospel' %}
+            {% elif r.type == 'first_reading' or r.type == 'second_reading' %}
+              {% set epub_type = 'reading scripture' %}
+            {% elif r.type == 'responsorial_psalm' %}
+              {% set epub_type = 'poem' %}
             {% elif r.type == 'gospel_acclamation' %}
-              <p class="acclamation-verse">{{ r.verse }}</p>
-            {% else %}
-              {% if r.incipit %}
-              <p class="incipit">{{ r.incipit }}</p>
-              {% endif %}
-              <p>{{ r.text }}</p>
+              {% set epub_type = 'prayer' %}
             {% endif %}
-          </section>
-        {% endfor %}
-      </section>
-      {% endif %}
-    </article>
+
+            <section
+              id="{{ r.segment_id }}"
+              class="reading reading-{{ r.type }}"
+              epub:type="{{ epub_type }}"
+            >
+              <h3 epub:type="title">
+                {{ r.type|replace('_',' ')|title }}
+                {% if r.citation %}
+                  <span class="citation"> — {{ r.citation }}</span>
+                {% endif %}
+              </h3>
+
+              {% if r.type == 'responsorial_psalm' %}
+                <p class="psalm-response">
+                  <span class="label">R.</span> {{ r.response }}
+                </p>
+                <ol class="psalm-verses">
+                  {% for v in r.verses %}
+                    <li>{{ v }}</li>
+                  {% endfor %}
+                </ol>
+
+              {% elif r.type == 'gospel_acclamation' %}
+                <p class="acclamation-verse">{{ r.verse }}</p>
+
+              {% else %}
+                {% if r.incipit %}
+                <p class="incipit">{{ r.incipit }}</p>
+                {% endif %}
+                <p>{{ r.text }}</p>
+              {% endif %}
+            </section>
+          {% endfor %}
+        </section>
+        {% endif %}
+      </article>
+    </main>
   </body>
 </html>
