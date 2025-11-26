@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ locale | default('en') }}">
+  <head>
+    <title>{{ mass.title }}</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <article id="{{ metadata.id }}">
+      <h1>{{ mass.title }}</h1>
+
+      {# Collect #}
+      {% if collect %}
+      <section id="{{ collect.segment_id }}">
+        <h2>{{ collect.display_label or 'Collect' }}</h2>
+        <p>{{ collect.text }}</p>
+      </section>
+      {% endif %}
+
+      {# Communion Antiphon #}
+      {% if communion_antiphon %}
+      <section id="{{ communion_antiphon.segment_id }}">
+        <h2>{{ communion_antiphon.display_label or 'Communion Antiphon' }}</h2>
+        {% if communion_antiphon.citation %}
+        <p class="citation">{{ communion_antiphon.citation }}</p>
+        {% endif %}
+        <p>{{ communion_antiphon.text }}</p>
+      </section>
+      {% endif %}
+
+      {# Readings #}
+      {% if readings %}
+      <section id="readings">
+        <h2>Readings</h2>
+        {% for r in readings %}
+          <section id="{{ r.segment_id }}" class="reading reading-{{ r.type }}">
+            <h3>
+              {{ r.type|replace('_',' ')|title }}
+              {% if r.citation %}<span class="citation"> — {{ r.citation }}</span>{% endif %}
+            </h3>
+
+            {% if r.type == 'responsorial_psalm' %}
+              <p class="psalm-response">
+                <span class="label">R.</span> {{ r.response }}
+              </p>
+              <ol class="psalm-verses">
+                {% for v in r.verses %}
+                  <li>{{ v }}</li>
+                {% endfor %}
+              </ol>
+            {% elif r.type == 'gospel_acclamation' %}
+              <p class="acclamation-verse">{{ r.verse }}</p>
+            {% else %}
+              {% if r.incipit %}
+              <p class="incipit">{{ r.incipit }}</p>
+              {% endif %}
+              <p>{{ r.text }}</p>
+            {% endif %}
+          </section>
+        {% endfor %}
+      </section>
+      {% endif %}
+    </article>
+  </body>
+</html>

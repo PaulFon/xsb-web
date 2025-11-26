@@ -1,0 +1,97 @@
+schema: 0.4
+locale: en-US
+
+components:
+  collects:
+    lent_1:
+      segment_id: "collect"
+      role: "oratio"
+      display_label: "Collect"
+      text: >-
+        Grant, almighty God, through the yearly observances of holy Lent,
+        that we may grow in understanding of the riches hidden in Christ,
+        and by worthy conduct pursue their effects.
+
+  antiphons:
+    communion_lent_1:
+      segment_id: "communion-antiphon"
+      role: "communio"
+      display_label: "Communion Antiphon"
+      citation: "cf. Ps 91 (90):4"
+      text: >-
+        The Lord will conceal you with his pinions,
+        and under his wings you will find refuge.
+
+reading_sets:
+  sunday_default:
+    year_B:
+      - segment_id: "reading-1"
+        type: first_reading
+        citation: "Genesis 9:8–15"
+        incipit: "God said to Noah and to his sons with him:"
+        text: >-
+          God said to Noah and to his sons with him: “See, I am now establishing
+          my covenant with you and your descendants after you...”
+      - segment_id: "psalm"
+        type: responsorial_psalm
+        citation: "Psalm 25:4–5, 6–7, 8–9"
+        response: "Your ways, O Lord, are love and truth to those who keep your covenant."
+        verses:
+          - "Your ways, O LORD, make known to me; teach me your paths..."
+      - segment_id: "reading-2"
+        type: second_reading
+        citation: "1 Peter 3:18–22"
+        text: >-
+          Beloved: Christ suffered for sins once, the righteous for the sake of the unrighteous...
+      - segment_id: "gospel-acc"
+        type: gospel_acclamation
+        verse: >-
+          One does not live on bread alone, but on every word that comes forth
+          from the mouth of God.
+      - segment_id: "gospel"
+        type: gospel
+        citation: "Mark 1:12–15"
+        incipit: "The Spirit drove Jesus out into the desert,"
+        text: >-
+          The Spirit drove Jesus out into the desert, and he remained in the
+          desert for forty days...
+
+calendar:
+  entries:
+    - metadata:
+        id: "2025-03-09-first-sunday-lent-b"
+        date: 2025-03-09
+        feast: "First Sunday of Lent"
+        liturgical_year: B
+        season: Lent
+        week: 1
+        color: Violet
+        lectionary_source: "Lectionary for Mass, 2nd Typical Edition"
+        copyright_notice: "© Confraternity of Christian Doctrine, Washington, DC"
+
+      mass:
+        title: "Mass for the First Sunday of Lent (Year B)"
+
+        collect:
+          $ref: components.collects.lent_1
+
+        communion_antiphon:
+          $ref: components.antiphons.communion_lent_1
+
+        readings:
+          use_set: "sunday_default"
+          resolve_with:
+            liturgical_year: B
+
+accessibility:
+  large_print:
+    base_font_family: "Noto Serif"
+    font_size: "18pt"
+    line_spacing: 1.5
+  braille:
+    code: "UEB"
+    contraction_level: grade_2
+  epub:
+    structure_tags: true
+    alt_text:
+      main_image: "Jesus in the desert for forty days"
