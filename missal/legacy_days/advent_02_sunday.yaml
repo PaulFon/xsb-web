@@ -1,0 +1,13 @@
+schema: xsb.missal.day.v2
+
+meta:
+  uid: "advent_02_sunday"
+  title: "Second Sunday of Advent"
+  rank: "sunday"
+  rank_precedence: 2
+  season: "advent"
+  color: ["violet"]
+
+liturgy:
+  collect:
+    ref: "collects:advent:2_sunday"

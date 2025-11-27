@@ -42,8 +42,8 @@ def main(argv=None):
     )
     parser.add_argument(
         "-o", "--out-dir",
-        default="out",
-        help="Output directory for rendered XHTML (default: out).",
+        default="public/mass",
+        help="Output directory for rendered XHTML (default: public/mass).",
     )
     parser.add_argument(
         "--templates-dir",
