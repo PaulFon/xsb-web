@@ -35,3 +35,7 @@ wiki/LocalSettings.php
 Missal-Original from old site/
 output/
 old-site/
+
+# build outputs
+out/
+public/
